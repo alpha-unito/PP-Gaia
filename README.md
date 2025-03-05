@@ -7,10 +7,6 @@ The folder is organized in the following way:
 - include   -> include files needed to compile the code;
 - Makefile  -> A Makefile than should be modified to compile the code;
 - Makefile.examples -> some exmaples of Makefile that we used to compile the code on different systems;
-- logs_simulator    -> log files of the runs performed with the simulator and script to obtain the corresponding plots;
-- logs_realdataset  -> log files on real datasets on different architectures;
-- example_runs      -> examples of sbatch files used to run the simulator;
-- binding           -> examples of binding files used on Leonardo and EpiTo architectures;
 
 You should use ```gcc>=12.2.0``` <br />
 

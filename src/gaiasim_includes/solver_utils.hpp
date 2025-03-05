@@ -185,6 +185,7 @@ inline void fill_system(double *const &sysmatAstro,
     currentStar = startingStar;
     obsStar = residual;
 
+
     srand(system_params::myid);
     // srand(42);
 
@@ -352,7 +353,7 @@ inline void fill_system(double *const &sysmatAstro,
         counterStarObs++;
         if (counterStarObs == obsStar)
         {
-            if (system_params::myid == (system_params::nproc - 1))
+            // if (system_params::myid == (system_params::nproc - 1))
                 // numOfObslast = counterStarObs;
             counterStarObs = 0;
             currentStar++;
@@ -574,9 +575,7 @@ void find_mapStar(int **const &mapStar, const int &nproc, const int &myid, const
         testVectSend[2 * myid] = firstStar;
         testVectSend[2 * myid + 1] = lastStar;
 
-        #ifdef USE_MPI
-            MPI_Allreduce(testVectSend, testVectRecv, 2 * nproc, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-        #endif
+        MPI_Allreduce(testVectSend, testVectRecv, 2 * nproc, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 
         for (int i = 0; i < nproc; i++)
             mapStar[i] = (int *)calloc(2, sizeof(int));

@@ -1106,15 +1106,6 @@ void lsqr(
     z      =   ZERO;
 
 
-    // Create an output file stream object
-    std::ofstream outfile;
-    outfile.open("knownTermsOMP.txt");
-    for(auto i=0; i<nElemKnownTerms; ++i){
-        outfile << knownTerms[i] << std::endl;
-    }
-    outfile.close();
-
-
     dload(vVect, nunkSplit, ZERO);
 
     #pragma omp target update to(vVect[0:nunkSplit]) 

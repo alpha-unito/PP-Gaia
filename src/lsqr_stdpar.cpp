@@ -962,15 +962,6 @@ void lsqr(
     //  These satisfy  beta*u = b,  alpha*v = A(transpose)*u.
     //  ------------------------------------------------------------------
 
-    // Create an output file stream object
-    std::ofstream outfile;
-    outfile.open("knownTermsSTDPAR.txt");
-    for(auto i=0; i<nElemKnownTerms; ++i){
-        outfile << knownTerms[i] << std::endl;
-    }
-    outfile.close();
-
-
 
     dload(vVect, nunkSplit, ZERO);
 

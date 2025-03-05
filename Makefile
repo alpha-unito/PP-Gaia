@@ -10,14 +10,178 @@
 ###---### C O M P I L E R   S E T T I N G S                             ###---###
 ###---###---###---###---###---###---###---###---###---###---###---###---###---###
 
-GNUTOOLCHAIN	?=	#PATHTOGCC example: /opt/compiler/gcc
+GNUTOOLCHAIN	?=	#PATHTOGNUSTLIBRARY
 MPI_HOME		?=	#PATHTOMPIHOME
-GPUARCH			?=	
-CUDAPATH		?= #/beegfs/home/gmalenza/src/compiler/GRACEHOPPER/hpc_sdk/Linux_aarch64/24.3/cuda/
-KOKKOSHOME		?= 
+GPUARCH			?=	#GPU architectures (could be: sm_90,sm_80,sm_75,sm_70,gfx90a,gfx908)
+CUDAPATH		?= 	#CUDAPATH
+ROCM_PATH		?= 	#ROCHPATH
+KOKKOSHOME		?= 	#KOKKOSINSTALLATIONDIRECTORY
 
+# Conditional statements
+ifeq ("$(GPUARCH)","sm_90")
+    $(info Compiling code for Hopper)
+	GENCODE		=arch=compute_90,code=$(GPUARCH)
+	GPUFLAG		=cc90
+	CUDAFLAG	= -std=c++20 
+	PLATFORM	=-D__NVIDIA90__
+else ifeq ("$(GPUARCH)","sm_80")
+    $(info Compiling code for Ampere)
+	GENCODE		=arch=compute_80,code=$(GPUARCH)
+	GPUFLAG		=cc80
+	TBBLINK		=-ltbb
+	CUDAFLAG	= -std=c++20 
+	PLATFORM	=-D__NVIDIA80__
+else ifeq ("$(GPUARCH)","sm_75")
+    $(info Compiling code for Tesla)
+	GENCODE		=arch=compute_75,code=$(GPUARCH)
+	GPUFLAG		=cc75
+	CUDAFLAG	= -std=c++20 
+	PLATFORM	=-D__NVIDIA70__
+else ifeq ("$(GPUARCH)","sm_70")
+    $(info Compiling code for Volta)
+	GENCODE		=arch=compute_70,code=$(GPUARCH)
+	GPUFLAG		=cc70
+	CUDAFLAG	= -std=c++20 
+	PLATFORM	=-D__NVIDIA70__
+else
+    $(info GPUARCH has an unexpected value: $(GPUARCH))
+endif
+
+
+CMPCUDA  		= nvcc
+CMPSYCL  		= acpp
+CMPNVCPP  		= nvc++
+CMPOMPGPU  		= nvc++
+CMPHIP			= hipcc
+CMPOPENACC      = nvc++
+CMPKOKKOS		= $(KOKKOSHOME)/bin/nvcc_wrapper
+
+
+###---###
 ifeq ($(USE_MPI),ON)
     $(info Compile with MPI)
+	OPTCOM		= -O3 $(PLATFORM) -DUSE_MPI
 else
     $(info Compile without MPI)
+	OPTCOM		= -O3 $(PLATFORM) -DKERNELTIME
 endif
+OPTCUDA		= $(OPTCOM) $(CUDAFLAG) -gencode=$(GENCODE)
+
+OPTSYCL		= $(OPTCOM) -std=c++20 --gcc-toolchain=$(GNUTOOLCHAIN) --acpp-platform=cuda --acpp-targets=cuda:$(GPUARCH) --acpp-gpu-arch=$(GPUARCH) #-DUSE_MPI
+OPTSTDPARG	= $(OPTCOM) -std=c++20 --gcc-toolchain=$(GNUTOOLCHAIN) -stdpar=gpu -gpu=$(GPUFLAG),$(GPUARCH) 
+OPTOMPGPU   = $(OPTCOM) -std=c++20 --gcc-toolchain=$(GNUTOOLCHAIN) -mp=gpu -gpu=$(GPUFLAG),$(GPUARCH)
+OPTHIP 		= $(OPTCOM) $(CUDAFLAG) --gpu-architecture=$(GPUARCH)
+OPTOPENACC  = $(OPTCOM) -acc -O3 -gpu=$(GPUFLAG) -DAUTO_TUNING 
+OPTKOKKOS	= $(OPTCOM) $(CUDAFLAG) -gencode=$(GENCODE) -fopenmp -extended-lambda
+
+###---###
+CPPCUDA		= $(CMPCUDA)	 $(OPTCUDA)
+CPPSYCL		= $(CMPSYCL) 	 $(OPTSYCL)
+CPPSTDPARG	= $(CMPNVCPP) 	 $(OPTSTDPARG)
+CPPOMPGPU	= $(CMPOMPGPU) 	 $(OPTOMPGPU)
+CPPHIP		= $(CMPHIP) 	 $(OPTHIP)
+CPPOPENACC  = $(CMPOPENACC)  $(OPTOPENACC)
+CPPKOKKOS	= $(CMPKOKKOS) $(OPTKOKKOS) -I$(KOKKOSHOME)/include
+
+
+###---###
+INCLUDE = -I$(PWD)/include
+ifdef CUDAPATH
+	INCLUDE := $(INCLUDE) -I$(CUDAPATH)/include
+else ifdef ROCM_PATH
+	INCLUDE := $(INCLUDE) -I$(ROCM_PATH)/include
+else
+    $(info Neither CUDAPATH and ROCM_PATH are setted)
+endif
+ifeq ($(USE_MPI),ON)
+	INCLUDE := $(INCLUDE) -I$(MPI_HOME)/include
+endif
+CPPFLAGS = $(INCLUDE)
+
+
+LIB =
+ifdef CUDAPATH
+	LIB := $(LIB) -L$(CUDAPATH)/lib64 -lcuda -lcudart
+else ifdef ROCM_PATH
+	LIB := $(LIB) -L$(ROCM_PATH)/lib -lamdhip64
+else
+endif
+ifeq ($(USE_MPI),ON)
+	LIB :=  $(LIB) -L$(MPI_HOME)/lib -lmpi
+endif
+
+###---### O B J E C T S
+GAIAGSRSIMCUDA			= build_obj/lsqrblas_cuda.o build_obj/lsqr_cuda.o build_obj/solvergaiaSim_cuda.o build_obj/util_cuda.o
+GAIAGSRSIMSYCL			= build_obj/lsqrblas_sycl.o build_obj/lsqr_sycl.o build_obj/solvergaiaSim_sycl.o build_obj/util_sycl.o
+GAIAGSRSIMSTDPARGPU		= build_obj/lsqrblas_stdpar.o build_obj/lsqr_stdpar.o build_obj/solvergaiaSim_stdpar.o build_obj/util_stdpar.o
+GAIAGSRSIMOMPGPU		= build_obj/lsqrblas_omp.o build_obj/lsqr_openmp_gpu.o build_obj/solvergaiaSim_omp.o build_obj/util_omp.o
+GAIAGSRSIMHIP			= build_obj/lsqrblas_hip.o build_obj/lsqr_hip.o build_obj/solvergaiaSim_hip.o build_obj/util_hip.o
+GAIAGSRSIMOPENACC       = build_obj/lsqrblas_openacc.o build_obj/lsqr_openacc.o build_obj/solvergaiaSim_openacc.o build_obj/util_openacc.o
+GAIAGSRSIMKOKKOS		= build_obj/lsqrblas_kokkos.o build_obj/lsqr_kokkos.o build_obj/solvergaiaSim_kokkos.o build_obj/util_kokkos.o
+
+###---### R U L E S
+.PHONY: all cuda sycl stdparG ompG openacc hip kokkos dir clean
+
+# all:  clean cuda sycl stdparG ompG hip
+cuda: build_obj/GaiaGsrParSimCuda.x
+sycl: build_obj/GaiaGsrParSimAdaptiveSycl.x
+stdparG: build_obj/GaiaGsrParSimStdparGPU_NVCPP.x
+ompG: build_obj/GaiaGsrParSimOMPGpu_NVCPP.x
+hip: build_obj/GaiaGsrParSimHip.x
+openacc: build_obj/GaiaGsrParSimOpenACC_NVCPP.x
+kokkos: build_obj/GaiaGsrParSimKokkos.x
+
+dir:
+	mkdir -p build_obj
+
+clean:
+	rm -rf build_obj *.x
+
+build_obj/GaiaGsrParSimCuda.x: dir src/lsqr_cuda.cu src/lsqrblas.cpp src/util.cpp src/solvergaiaSim.cpp
+	$(CPPCUDA) $(CPPFLAGS) -c src/lsqr_cuda.cu	-o build_obj/lsqr_cuda.o
+	$(CPPCUDA) $(CPPFLAGS) -c src/lsqrblas.cpp -o build_obj/lsqrblas_cuda.o
+	$(CPPCUDA) $(CPPFLAGS) -c src/util.cpp -o build_obj/util_cuda.o
+	$(CPPCUDA) $(CPPFLAGS) -c src/solvergaiaSim.cpp -o build_obj/solvergaiaSim_cuda.o
+	$(CPPCUDA) -o GaiaGsrParSimCuda.x $(GAIAGSRSIMCUDA) $(INCLUDE) $(LIB)
+
+build_obj/GaiaGsrParSimStdparGPU_NVCPP.x: dir src/solvergaiaSim.cpp src/util.cpp  src/lsqrblas.cpp src/lsqr_stdpar.cpp
+	$(CPPSTDPARG) $(CPPFLAGS) -c src/solvergaiaSim.cpp -o build_obj/solvergaiaSim_stdpar.o
+	$(CPPSTDPARG) $(CPPFLAGS) -c src/util.cpp -o build_obj/util_stdpar.o
+	$(CPPSTDPARG) $(CPPFLAGS) -c src/lsqrblas.cpp -o build_obj/lsqrblas_stdpar.o
+	$(CPPSTDPARG) $(CPPFLAGS) -c src/lsqr_stdpar.cpp -o build_obj/lsqr_stdpar.o
+	$(CPPSTDPARG) -o GaiaGsrParSimStdparGPU_NVCPP.x $(GAIAGSRSIMSTDPARGPU) $(INCLUDE) $(LIB)
+
+build_obj/GaiaGsrParSimAdaptiveSycl.x: dir src/lsqr_sycl.cpp src/lsqrblas.cpp src/util.cpp src/solvergaiaSim.cpp
+	$(CPPSYCL) $(CPPFLAGS) -c src/lsqr_sycl.cpp -o build_obj/lsqr_sycl.o
+	$(CPPSYCL) $(CPPFLAGS) -c src/lsqrblas.cpp -o build_obj/lsqrblas_sycl.o
+	$(CPPSYCL) $(CPPFLAGS) -c src/util.cpp -o build_obj/util_sycl.o
+	$(CPPSYCL) $(CPPFLAGS) -c src/solvergaiaSim.cpp -o build_obj/solvergaiaSim_sycl.o
+	$(CPPSYCL) -o GaiaGsrParSimAdaptiveSycl.x $(GAIAGSRSIMSYCL) $(INCLUDE) $(LIB)
+
+build_obj/GaiaGsrParSimOMPGpu_NVCPP.x: dir src/lsqr_openmp_gpu.cpp src/lsqrblas.cpp  src/util.cpp src/solvergaiaSim.cpp
+	$(CPPOMPGPU) $(CPPFLAGS) -c src/lsqr_openmp_gpu.cpp	-o build_obj/lsqr_openmp_gpu.o
+	$(CPPOMPGPU) $(CPPFLAGS) -c src/lsqrblas.cpp -o build_obj/lsqrblas_omp.o
+	$(CPPOMPGPU) $(CPPFLAGS) -c src/util.cpp -o build_obj/util_omp.o
+	$(CPPOMPGPU) $(CPPFLAGS) -c src/solvergaiaSim.cpp -o build_obj/solvergaiaSim_omp.o
+	$(CPPOMPGPU) -o GaiaGsrParSimOMPGpu_NVCPP.x $(GAIAGSRSIMOMPGPU) $(INCLUDE) $(LIB)
+
+build_obj/GaiaGsrParSimHip.x: dir src/lsqr_hip.cpp src/lsqrblas.cpp src/util.cpp src/solvergaiaSim.cpp
+	$(CPPHIP) $(CPPFLAGS) -c src/lsqr_hip.cpp	-o build_obj/lsqr_hip.o
+	$(CPPHIP) $(CPPFLAGS) -c src/lsqrblas.cpp -o build_obj/lsqrblas_hip.o
+	$(CPPHIP) $(CPPFLAGS) -c src/util.cpp -o build_obj/util_hip.o
+	$(CPPHIP) $(CPPFLAGS) -c src/solvergaiaSim.cpp -o build_obj/solvergaiaSim_hip.o
+	$(CPPHIP) -o GaiaGsrParSimHip.x $(GAIAGSRSIMHIP) $(INCLUDE) $(LIB)
+
+build_obj/GaiaGsrParSimOpenACC_NVCPP.x: dir src/lsqr_openacc.cpp src/lsqrblas.cpp src/util.cpp src/solvergaiaSim.cpp
+	$(CPPOPENACC) $(CPPFLAGS) -c src/lsqr_openacc.cpp	-o build_obj/lsqr_openacc.o
+	$(CPPOPENACC) $(CPPFLAGS) -c src/lsqrblas.cpp -o build_obj/lsqrblas_openacc.o
+	$(CPPOPENACC) $(CPPFLAGS) -c src/util.cpp -o build_obj/util_openacc.o
+	$(CPPOPENACC) $(CPPFLAGS) -c src/solvergaiaSim.cpp -o build_obj/solvergaiaSim_openacc.o
+	$(CPPOPENACC) -o GaiaGsrParSimOpenACC_NVCPP.x $(GAIAGSRSIMOPENACC) $(INCLUDE) $(LIB)
+
+build_obj/GaiaGsrParSimKokkos.x: dir src/lsqr_kokkos.cpp src/lsqrblas.cpp src/util.cpp src/solvergaiaSim.cpp
+	$(CPPKOKKOS) $(CPPFLAGS) -c src/lsqr_kokkos.cpp	-o build_obj/lsqr_kokkos.o
+	$(CPPKOKKOS) $(CPPFLAGS) -c src/lsqrblas.cpp -o build_obj/lsqrblas_kokkos.o
+	$(CPPKOKKOS) $(CPPFLAGS) -c src/util.cpp -o build_obj/util_kokkos.o
+	$(CPPKOKKOS) $(CPPFLAGS) -c src/solvergaiaSim.cpp -o build_obj/solvergaiaSim_kokkos.o
+	$(CPPKOKKOS) -o GaiaGsrParSimKokkos.x $(GAIAGSRSIMKOKKOS) $(INCLUDE) $(LIB) -L$(KOKKOSHOME)/lib -lkokkoscore -lkokkoscontainers
