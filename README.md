@@ -57,3 +57,5 @@ Here:
 - memGlobal specifies approximately how much memory the system occupies in GB
 - IDtest 0 specifies that the test, if run up to convergence, reaches the identity solution
 - itnlimit specifies the maximum number of iterations run by LSQR. This number is not reached if confergence is reached before.
+
+In the scripts directory, some example scripts can be found for reproducibility.
