@@ -21,6 +21,18 @@ SYCL Version
     #include <mpi.h>
 #endif
 
+#ifdef PROF // put also AMD
+    #include <nvToolsExt.h>
+
+    class Astro1Kernel; 
+    class Att1Kernel; 
+    class Instr1kernel; 
+    class Astro2Kernel; 
+    class Att2Kernel;
+    class Instr2kernel; 
+
+
+#endif
 
 #define ZERO   0.0
 #define ONE    1.0
@@ -60,7 +72,7 @@ static const int THREADS_PER_WRAPS=32;
     #define ThreadsXBlockAprod2Astro 256
     #define ThreadsXBlockAprod1Astro 128
     #define ThreadsXBlockAprod2AttInstr 16
-    #define ThreadsXBlockAprod1AttInstr 16 
+    #define ThreadsXBlockAprod1AttInstr 16
     #define RowsPerBlock 1
     #define TILE_WIDTH 32 
 #elif defined (__NVIDIA80__)
@@ -655,17 +667,17 @@ void aprod2_Kernel_astro(double * __restrict__ vVect_dev,
 
 
 
-void aprod2_Kernel_att_AttAxis(double * __restrict__ vVect_dev, 
-                                const double * __restrict__ systemMatrix_dev, 
-                                const double * __restrict__ knownTerms_dev, 
-                                const long*  __restrict__ matrixIndexAtt_dev, 
-                                const long nAttP, 
-                                const long nDegFreedomAtt, 
-                                const long offLocalAtt, 
-                                const long nobs, 
-                                const short  nAstroPSolved, 
-                                const short  nAttParAxis,
-                               const sycl::nd_item<3> &item_ct1)
+void aprod2_Kernel_att_AttAxis(double * __restrict__ vVect_dev,                         //0
+                                const double * __restrict__ systemMatrix_dev,           //1
+                                const double * __restrict__ knownTerms_dev,             //2
+                                const long*  __restrict__ matrixIndexAtt_dev,           //3
+                                const long nAttP,                                       //4     
+                                const long nDegFreedomAtt,                              //5    
+                                const long offLocalAtt,                                 //6
+                                const long nobs,                                        //7
+                                const short  nAstroPSolved,                             //8
+                                const short  nAttParAxis,                               //9
+                               const sycl::nd_item<3> &item_ct1)                        //10                
 {
     long ix = item_ct1.get_group(2)*item_ct1.get_local_range(2)+item_ct1.get_local_id(2);
     while(ix < nobs)
@@ -683,7 +695,7 @@ void aprod2_Kernel_att_AttAxis(double * __restrict__ vVect_dev,
         
         
         for (short inpax = 0; inpax < nAttParAxis; ++inpax)
-                atomicAdd(&vVect_dev[jstartAtt + inpax],systemMatrix_dev[ix * nAttP + nAttParAxis + nAttParAxis +inpax] *knownTerms_dev[ix]);
+            atomicAdd(&vVect_dev[jstartAtt + inpax],systemMatrix_dev[ix * nAttP + nAttParAxis + nAttParAxis +inpax] *knownTerms_dev[ix]);
         ix += item_ct1.get_group_range(2) * item_ct1.get_local_range(2);
 
    }
@@ -1844,13 +1856,30 @@ if (beta > ZERO)
         #ifdef KERNELTIME
 
                 if(nAstroPSolved){
-                    auto event=queue.parallel_for(
-                        sycl::nd_range<3>(gridDim_aprod1astro*sycl::range<3>(1, 1, ThreadsXBlockAprod1Astro),sycl::range<3>(1, 1, ThreadsXBlockAprod1Astro)),
-                        [=](sycl::nd_item<3> item_ct1) {
-                            aprod1_Kernel_astro(knownTerms_dev, sysmatAstro_dev,vVect_dev, matrixIndexAstro_dev,mapNoss, offLocalAstro, nAstroPSolved,item_ct1);
-                        });
-            
-                    event.wait();
+
+                    #ifdef PROF
+
+                        auto event=queue.parallel_for<Astro1Kernel>(
+                            sycl::nd_range<3>(gridDim_aprod1astro*sycl::range<3>(1, 1, ThreadsXBlockAprod1Astro),sycl::range<3>(1, 1, ThreadsXBlockAprod1Astro)),
+                            [=](sycl::nd_item<3> item_ct1) {
+                                aprod1_Kernel_astro(knownTerms_dev, sysmatAstro_dev,vVect_dev, matrixIndexAstro_dev,mapNoss, offLocalAstro, nAstroPSolved,item_ct1);
+                            });
+                
+                        event.wait();
+
+
+                    #else
+
+                        auto event=queue.parallel_for(
+                            sycl::nd_range<3>(gridDim_aprod1astro*sycl::range<3>(1, 1, ThreadsXBlockAprod1Astro),sycl::range<3>(1, 1, ThreadsXBlockAprod1Astro)),
+                            [=](sycl::nd_item<3> item_ct1) {
+                                aprod1_Kernel_astro(knownTerms_dev, sysmatAstro_dev,vVect_dev, matrixIndexAstro_dev,mapNoss, offLocalAstro, nAstroPSolved,item_ct1);
+                            });
+                
+                        event.wait();
+
+                    #endif
+
                     auto start = event.get_profiling_info<sycl::info::event_profiling::command_start>();
                     auto end = event.get_profiling_info<sycl::info::event_profiling::command_end>();
                     timekernel[0]+=end-start;
@@ -1858,13 +1887,30 @@ if (beta > ZERO)
                 }
 
                 if(nAttP){ 
-                    auto event=queue.parallel_for(
-                        sycl::nd_range<3>(gridDim_aprod1attinstr*sycl::range<3>(1, 1, ThreadsXBlockAprod1AttInstr),sycl::range<3>(1, 1, ThreadsXBlockAprod1AttInstr)),
-                        [=](sycl::nd_item<3> item_ct1) {
-                            aprod1_Kernel_att_AttAxis(knownTerms_dev, sysmatAtt_dev, vVect_dev,matrixIndexAtt_dev, nAttP, mapNoss, nDegFreedomAtt,offLocalAtt, nAttParAxis, item_ct1);
-                        });
 
-                    event.wait();
+                    #ifdef PROF
+
+                        auto event=queue.parallel_for<Att1Kernel>(
+                            sycl::nd_range<3>(gridDim_aprod1attinstr*sycl::range<3>(1, 1, ThreadsXBlockAprod1AttInstr),sycl::range<3>(1, 1, ThreadsXBlockAprod1AttInstr)),
+                            [=](sycl::nd_item<3> item_ct1) {
+                                aprod1_Kernel_att_AttAxis(knownTerms_dev, sysmatAtt_dev, vVect_dev,matrixIndexAtt_dev, nAttP, mapNoss, nDegFreedomAtt,offLocalAtt, nAttParAxis, item_ct1);
+                            });
+
+                        event.wait();
+
+
+                    #else
+
+                        auto event=queue.parallel_for(
+                            sycl::nd_range<3>(gridDim_aprod1attinstr*sycl::range<3>(1, 1, ThreadsXBlockAprod1AttInstr),sycl::range<3>(1, 1, ThreadsXBlockAprod1AttInstr)),
+                            [=](sycl::nd_item<3> item_ct1) {
+                                aprod1_Kernel_att_AttAxis(knownTerms_dev, sysmatAtt_dev, vVect_dev,matrixIndexAtt_dev, nAttP, mapNoss, nDegFreedomAtt,offLocalAtt, nAttParAxis, item_ct1);
+                            });
+
+                        event.wait();
+
+                    #endif
+
                     auto start = event.get_profiling_info<sycl::info::event_profiling::command_start>();
                     auto end = event.get_profiling_info<sycl::info::event_profiling::command_end>();
                     timekernel[1]+=end-start;
@@ -1874,13 +1920,29 @@ if (beta > ZERO)
             //    APROD1 INSTR CALL
             {
                 if(nInstrPSolved){
-                    auto event=queue.parallel_for(
-                        sycl::nd_range<3>(gridDim_aprod1attinstr *sycl::range<3>(1, 1, ThreadsXBlockAprod1AttInstr),sycl::range<3>(1, 1, ThreadsXBlockAprod1AttInstr)),
-                            [=](sycl::nd_item<3> item_ct1) {
-                            aprod1_Kernel_instr(knownTerms_dev, sysmatInstr_dev,vVect_dev, instrCol_dev, mapNoss,offLocalInstr, nInstrPSolved, item_ct1);
-                        });
 
-                    event.wait();
+                    #ifdef PROF
+
+                        auto event=queue.parallel_for<Instr1kernel>(
+                            sycl::nd_range<3>(gridDim_aprod1attinstr *sycl::range<3>(1, 1, ThreadsXBlockAprod1AttInstr),sycl::range<3>(1, 1, ThreadsXBlockAprod1AttInstr)),
+                                [=](sycl::nd_item<3> item_ct1) {
+                                aprod1_Kernel_instr(knownTerms_dev, sysmatInstr_dev,vVect_dev, instrCol_dev, mapNoss,offLocalInstr, nInstrPSolved, item_ct1);
+                            });
+
+                        event.wait();
+
+                    #else
+
+                        auto event=queue.parallel_for(
+                            sycl::nd_range<3>(gridDim_aprod1attinstr *sycl::range<3>(1, 1, ThreadsXBlockAprod1AttInstr),sycl::range<3>(1, 1, ThreadsXBlockAprod1AttInstr)),
+                                [=](sycl::nd_item<3> item_ct1) {
+                                aprod1_Kernel_instr(knownTerms_dev, sysmatInstr_dev,vVect_dev, instrCol_dev, mapNoss,offLocalInstr, nInstrPSolved, item_ct1);
+                            });
+
+                        event.wait();
+
+                    #endif
+
                     auto start = event.get_profiling_info<sycl::info::event_profiling::command_start>();
                     auto end = event.get_profiling_info<sycl::info::event_profiling::command_end>();
                     timekernel[2]+=end-start;
@@ -2208,18 +2270,42 @@ if (beta > ZERO)
             #ifdef KERNELTIME
 
                     if (nAstroPSolved) {
-                        auto event=queue_Aprod2_0.submit([&](sycl::handler &cgh) {
-                            sycl::local_accessor<double, 3> sharedSum_acc_ct1(sycl::range<3>(RowsPerBlock, ThreadsXBlockAprod2Astro, 5),cgh);
 
-                            cgh.parallel_for(
-                                sycl::nd_range<3>(gridAprod2astro*blockAprod2astro,blockAprod2astro),
-                                [=](sycl::nd_item<3> item_ct1) {
-                                    aprod2_Kernel_astro<RowsPerBlock,ThreadsXBlockAprod2Astro>(
-                                        vVect_dev, sysmatAstro_dev, knownTerms_dev,matrixIndexAstro_dev, startend_dev, offLocalAstro,nnz, nAstroPSolved, item_ct1, sharedSum_acc_ct1);
-                                });
-                        });
+                        #ifdef PROF
 
-                        event.wait();
+                            auto event=queue_Aprod2_0.submit([&](sycl::handler &cgh) {
+                                sycl::local_accessor<double, 3> sharedSum_acc_ct1(sycl::range<3>(RowsPerBlock, ThreadsXBlockAprod2Astro, 5),cgh);
+
+                                cgh.parallel_for<Astro2Kernel>(
+                                    sycl::nd_range<3>(gridAprod2astro*blockAprod2astro,blockAprod2astro),
+                                    [=](sycl::nd_item<3> item_ct1) {
+                                        aprod2_Kernel_astro<RowsPerBlock,ThreadsXBlockAprod2Astro>(
+                                            vVect_dev, sysmatAstro_dev, knownTerms_dev,matrixIndexAstro_dev, startend_dev, offLocalAstro,nnz, nAstroPSolved, item_ct1, sharedSum_acc_ct1);
+                                    });
+                            });
+
+                            event.wait();
+
+                        #else
+
+
+                            auto event=queue_Aprod2_0.submit([&](sycl::handler &cgh) {
+                                sycl::local_accessor<double, 3> sharedSum_acc_ct1(sycl::range<3>(RowsPerBlock, ThreadsXBlockAprod2Astro, 5),cgh);
+
+                                cgh.parallel_for(
+                                    sycl::nd_range<3>(gridAprod2astro*blockAprod2astro,blockAprod2astro),
+                                    [=](sycl::nd_item<3> item_ct1) {
+                                        aprod2_Kernel_astro<RowsPerBlock,ThreadsXBlockAprod2Astro>(
+                                            vVect_dev, sysmatAstro_dev, knownTerms_dev,matrixIndexAstro_dev, startend_dev, offLocalAstro,nnz, nAstroPSolved, item_ct1, sharedSum_acc_ct1);
+                                    });
+                            });
+
+                            event.wait();
+
+
+
+                        #endif
+
                         auto start = event.get_profiling_info<sycl::info::event_profiling::command_start>();
                         auto end = event.get_profiling_info<sycl::info::event_profiling::command_end>();
                         timekernel[3]+=end-start;
@@ -2228,12 +2314,27 @@ if (beta > ZERO)
 
                     if(nAttP){
 
-                        auto event=queue_Aprod2_1.parallel_for(sycl::nd_range<3>(gridDim_aprod2attinstr*sycl::range<3>(1, 1, ThreadsXBlockAprod2AttInstr),sycl::range<3>(1, 1, ThreadsXBlockAprod2AttInstr)),
-                            [=](sycl::nd_item<3> item_ct1) {
-                                aprod2_Kernel_att_AttAxis(vVect_dev, sysmatAtt_dev, knownTerms_dev,matrixIndexAtt_dev, nAttP, nDegFreedomAtt, offLocalAtt,mapNoss, nAstroPSolved, nAttParAxis, item_ct1);
-                            });
+                        #ifdef PROF
 
-                        event.wait();
+                            auto event=queue_Aprod2_1.parallel_for<Att2Kernel>(sycl::nd_range<3>(gridDim_aprod2attinstr*sycl::range<3>(1, 1, ThreadsXBlockAprod2AttInstr),sycl::range<3>(1, 1, ThreadsXBlockAprod2AttInstr)),
+                                [=](sycl::nd_item<3> item_ct1) {
+                                    aprod2_Kernel_att_AttAxis(vVect_dev, sysmatAtt_dev, knownTerms_dev,matrixIndexAtt_dev, nAttP, nDegFreedomAtt, offLocalAtt,mapNoss, nAstroPSolved, nAttParAxis, item_ct1);
+                                });
+
+                            event.wait();
+
+
+                        #else
+
+                            auto event=queue_Aprod2_1.parallel_for(sycl::nd_range<3>(gridDim_aprod2attinstr*sycl::range<3>(1, 1, ThreadsXBlockAprod2AttInstr),sycl::range<3>(1, 1, ThreadsXBlockAprod2AttInstr)),
+                                [=](sycl::nd_item<3> item_ct1) {
+                                    aprod2_Kernel_att_AttAxis(vVect_dev, sysmatAtt_dev, knownTerms_dev,matrixIndexAtt_dev, nAttP, nDegFreedomAtt, offLocalAtt,mapNoss, nAstroPSolved, nAttParAxis, item_ct1);
+                                });
+
+                            event.wait();
+
+                        #endif
+
                         auto start = event.get_profiling_info<sycl::info::event_profiling::command_start>();
                         auto end = event.get_profiling_info<sycl::info::event_profiling::command_end>();
                         timekernel[4]+=end-start;
@@ -2242,12 +2343,28 @@ if (beta > ZERO)
 
                     if(nInstrPSolved){
 
-                        auto event=queue_Aprod2_2.parallel_for(sycl::nd_range<3>(gridDim_aprod2attinstr*sycl::range<3>(1, 1, ThreadsXBlockAprod2AttInstr), sycl::range<3>(1, 1, ThreadsXBlockAprod2AttInstr)),
-                            [=](sycl::nd_item<3> item_ct1) {
-                                aprod2_Kernel_instr(vVect_dev, sysmatInstr_dev,knownTerms_dev, instrCol_dev,offLocalInstr, mapNoss, nInstrPSolved,item_ct1);
-                            });
+                        #ifdef PROF
 
-                        event.wait();
+                            auto event=queue_Aprod2_2.parallel_for<Instr2kernel>(sycl::nd_range<3>(gridDim_aprod2attinstr*sycl::range<3>(1, 1, ThreadsXBlockAprod2AttInstr), sycl::range<3>(1, 1, ThreadsXBlockAprod2AttInstr)),
+                                [=](sycl::nd_item<3> item_ct1) {
+                                    aprod2_Kernel_instr(vVect_dev, sysmatInstr_dev,knownTerms_dev, instrCol_dev,offLocalInstr, mapNoss, nInstrPSolved,item_ct1);
+                                });
+
+                            event.wait();
+
+
+
+                        #else
+
+                            auto event=queue_Aprod2_2.parallel_for(sycl::nd_range<3>(gridDim_aprod2attinstr*sycl::range<3>(1, 1, ThreadsXBlockAprod2AttInstr), sycl::range<3>(1, 1, ThreadsXBlockAprod2AttInstr)),
+                                [=](sycl::nd_item<3> item_ct1) {
+                                    aprod2_Kernel_instr(vVect_dev, sysmatInstr_dev,knownTerms_dev, instrCol_dev,offLocalInstr, mapNoss, nInstrPSolved,item_ct1);
+                                });
+
+                            event.wait();
+
+                        #endif
+
                         auto start = event.get_profiling_info<sycl::info::event_profiling::command_start>();
                         auto end = event.get_profiling_info<sycl::info::event_profiling::command_end>();
                         timekernel[5]+=end-start;

@@ -94,8 +94,8 @@
  
  
  
-     // astro_params::nAstroParam = astro_params::nStar * astro_params::nAstroPSolved;
-     astro_params::nAstroParam = 0;
+    // astro_params::nAstroParam = astro_params::nStar * astro_params::nAstroPSolved;
+    astro_params::nAstroParam = 0;
  
      att_params::nAttParam = att_params::nDegFreedomAtt * att_params::nAttAxes;
      att_params::nAttP = att_params::nAttAxes * att_params::nAttParAxis;

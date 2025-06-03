@@ -44,7 +44,6 @@ static const int gridSize = 1024;
 
 
 
-// AMD
 #if defined(__MI100X__)
     #ifndef AUTO_TUNING
         #if !defined(TEAMSAPROD2ASTRO)
@@ -53,15 +52,15 @@ static const int gridSize = 1024;
         #endif
         #if !defined(TEAMSAPROD2)
             #define TEAMSAPROD2 64
-            #define THREADSAPROD2 32 
+            #define THREADSAPROD2 256
         #endif
         #if !defined(TEAMSAPROD1ASTRO)
             #define TEAMSAPROD1ASTRO 4096
-            #define THREADSAPROD1ASTRO 128 
+            #define THREADSAPROD1ASTRO 128 //32
         #endif
         #if !defined(TEAMSAPROD1)
             #define TEAMSAPROD1 256
-            #define THREADSAPROD1 32
+            #define THREADSAPROD1 1024
         #endif
         #if !defined(TILEWIDTH)
             #define TILEWIDTH 32
@@ -70,20 +69,20 @@ static const int gridSize = 1024;
 #elif defined(__MI250X__)
     #ifndef AUTO_TUNING
         #if !defined(TEAMSAPROD2ASTRO)
-            #define TEAMSAPROD2ASTRO 1024
-            #define THREADSAPROD2ASTRO 16
+            #define TEAMSAPROD2ASTRO 64
+            #define THREADSAPROD2ASTRO 256
         #endif
         #if !defined(TEAMSAPROD2)
-            #define TEAMSAPROD2 2048 
-            #define THREADSAPROD2  16
+            #define TEAMSAPROD2 64
+            #define THREADSAPROD2 256
         #endif
         #if !defined(TEAMSAPROD1ASTRO)
             #define TEAMSAPROD1ASTRO 4096
-            #define THREADSAPROD1ASTRO 128
+            #define THREADSAPROD1ASTRO 128 
         #endif
         #if !defined(TEAMSAPROD1)
-            #define TEAMSAPROD1 4096
-            #define THREADSAPROD1 16 
+            #define TEAMSAPROD1 256
+            #define THREADSAPROD1 1024
         #endif
         #if !defined(TILEWIDTH)
             #define TILEWIDTH 32
@@ -93,33 +92,11 @@ static const int gridSize = 1024;
     #ifndef AUTO_TUNING
         #if !defined(TEAMSAPROD2ASTRO)
             #define TEAMSAPROD2ASTRO 1024
-            #define THREADSAPROD2ASTRO 16 
+            #define THREADSAPROD2ASTRO 16 //256
         #endif
         #if !defined(TEAMSAPROD2)
             #define TEAMSAPROD2 2048 
-            #define THREADSAPROD2  32
-        #endif
-        #if !defined(TEAMSAPROD1ASTRO)
-            #define TEAMSAPROD1ASTRO 4096
-            #define THREADSAPROD1ASTRO 128 
-        #endif
-        #if !defined(TEAMSAPROD1)
-            #define TEAMSAPROD1 4096
-            #define THREADSAPROD1 32 
-        #endif
-        #if !defined(TILEWIDTH)
-            #define TILEWIDTH 32
-        #endif
-    #endif
-#elif defined(__NVIDIA80__)
-    #ifndef AUTO_TUNING
-        #if !defined(TEAMSAPROD2ASTRO)
-            #define TEAMSAPROD2ASTRO 1024
-            #define THREADSAPROD2ASTRO 16 
-        #endif
-        #if !defined(TEAMSAPROD2)
-            #define TEAMSAPROD2 2048 
-            #define THREADSAPROD2  32
+            #define THREADSAPROD2  16 //32
         #endif
         #if !defined(TEAMSAPROD1ASTRO)
             #define TEAMSAPROD1ASTRO 4096
@@ -127,29 +104,51 @@ static const int gridSize = 1024;
         #endif
         #if !defined(TEAMSAPROD1)
             #define TEAMSAPROD1 4096
-            #define THREADSAPROD1 32 
+            #define THREADSAPROD1 16 //32 
         #endif
         #if !defined(TILEWIDTH)
-            #define TILEWIDTH 32
+            #define TILEWIDTH 64
+        #endif
+    #endif
+#elif defined(__NVIDIA80__)
+    #ifndef AUTO_TUNING
+        #if !defined(TEAMSAPROD2ASTRO)
+            #define TEAMSAPROD2ASTRO 1024
+            #define THREADSAPROD2ASTRO 16   //256
+        #endif
+        #if !defined(TEAMSAPROD2)
+            #define TEAMSAPROD2 2048 
+            #define THREADSAPROD2  16 //32
+        #endif
+        #if !defined(TEAMSAPROD1ASTRO)
+            #define TEAMSAPROD1ASTRO 4096
+            #define THREADSAPROD1ASTRO 128
+        #endif
+        #if !defined(TEAMSAPROD1)
+            #define TEAMSAPROD1 4096
+            #define THREADSAPROD1 16 //32 
+        #endif
+        #if !defined(TILEWIDTH)
+            #define TILEWIDTH 64
         #endif
     #endif
 #elif defined(__NVIDIA70__)
     #ifndef AUTO_TUNING
         #if !defined(TEAMSAPROD2ASTRO)
             #define TEAMSAPROD2ASTRO 1024
-            #define THREADSAPROD2ASTRO 16
+            #define THREADSAPROD2ASTRO 16 //256 
         #endif
         #if !defined(TEAMSAPROD2)
             #define TEAMSAPROD2 2048 
-            #define THREADSAPROD2  32
+            #define THREADSAPROD2  16 //32
         #endif
         #if !defined(TEAMSAPROD1ASTRO)
             #define TEAMSAPROD1ASTRO 4096
-            #define THREADSAPROD1ASTRO 128 
+            #define THREADSAPROD1ASTRO 128
         #endif
         #if !defined(TEAMSAPROD1)
             #define TEAMSAPROD1 4096
-            #define THREADSAPROD1 32 
+            #define THREADSAPROD1 16 //32 
         #endif
         #if !defined(TILEWIDTH)
             #define TILEWIDTH 32
@@ -339,17 +338,17 @@ void aprod1_Kernel_att_AttAxis(double*   __restrict__ knownTerms_dev,
         long jstartAtt_0{matrixIndexAtt[ix] + offLocalAtt}; 
 
         
-        for(auto inpax = 0;inpax<nAttParAxis; ++inpax)
+        for(short inpax = 0;inpax<nAttParAxis; ++inpax)
             sum += systemMatrix_dev[ix*nAttP + inpax ] * vVect_dev[jstartAtt_0 + inpax];
         jstartAtt_0 += nDegFreedomAtt;
 
         
-        for(auto inpax = 0;inpax<nAttParAxis;++inpax)
+        for(short inpax = 0;inpax<nAttParAxis;++inpax)
             sum +=  systemMatrix_dev[ix*nAttP+nAttParAxis+inpax] * vVect_dev[jstartAtt_0+inpax];
         jstartAtt_0 += nDegFreedomAtt;
 
         
-        for(auto inpax = 0;inpax<nAttParAxis;++inpax)
+        for(short inpax = 0;inpax<nAttParAxis;++inpax)
             sum += systemMatrix_dev[ix*nAttP + nAttParAxis+nAttParAxis +inpax] * vVect_dev[jstartAtt_0+inpax];
 
         knownTerms_dev[ix]+=sum;
@@ -571,7 +570,7 @@ void aprod2_Kernel_astro(double*   __restrict__ vVect_dev,
         for(long i=stdix_start; i<stdix_end; ++i){
             double tmp=knownTerms_dev[i];
             
-            for (auto jx = 0; jx < nAstroPSolved; jx++){ 
+            for (short jx = 0; jx < nAstroPSolved; jx++){ 
                     vVect_dev[tid + jx]+= systemMatrix_dev[i*nAstroPSolved + jx] * tmp;
             }
         }
@@ -600,21 +599,21 @@ void aprod2_Kernel_att_AttAxis(double *  __restrict__ vVect_dev,
 
         long jstartAtt = matrixIndexAtt[ix] + offLocalAtt;
         
-        for (auto inpax = 0; inpax < nAttParAxis; ++inpax){
+        for (short inpax = 0; inpax < nAttParAxis; ++inpax){
             #pragma omp atomic update
             vVect_dev[jstartAtt+inpax]+=systemMatrix_dev[ix*nAttP+inpax]*knownTerms_dev[ix];
         }
         jstartAtt +=nDegFreedomAtt;
 
         
-        for (auto inpax = 0; inpax < nAttParAxis; ++inpax){
+        for (short inpax = 0; inpax < nAttParAxis; ++inpax){
             #pragma omp atomic update
             vVect_dev[jstartAtt+inpax]+=systemMatrix_dev[ix*nAttP+nAttParAxis+inpax]*knownTerms_dev[ix];
         }
         jstartAtt +=nDegFreedomAtt;
 
         
-        for (auto inpax = 0; inpax < nAttParAxis; ++inpax){
+        for (short inpax = 0; inpax < nAttParAxis; ++inpax){
             #pragma omp atomic update
             vVect_dev[jstartAtt+inpax]+=systemMatrix_dev[ix*nAttP+nAttParAxis+nAttParAxis+inpax]*knownTerms_dev[ix];
         }
@@ -639,7 +638,7 @@ void aprod2_Kernel_instr(double *  __restrict__ vVect_dev,
     #endif
     for(long ix=0; ix<nobs; ++ix){
         
-        for (auto inInstr = 0; inInstr < nInstrPSolved; inInstr++){
+        for (short inInstr = 0; inInstr < nInstrPSolved; inInstr++){
             double MatVal{systemMatrix_dev[ix*nInstrPSolved + inInstr]};
             double rhs{knownTerms_dev[ix]};
             double tmp=MatVal*rhs;
@@ -725,7 +724,7 @@ void aprod2_Kernel_BarConstr(double*   __restrict__ vVect_dev,
         for(int ix=0;ix<nEqBarConstr;++ix){  
             const double yi{knownTerms_dev[nobs+nEqExtConstr+ix]};
             const long offBarStarConstrEq{nEqExtConstr*nOfElextObs+ix*nOfElBarObs};
-            for(auto j2=0;j2<nAstroPSolved;j2++){
+            for(short j2=0;j2<nAstroPSolved;j2++){
                 vVect_dev[yx*nAstroPSolved + j2] += systemMatrix_dev[offBarStarConstrEq+yx*nAstroPSolved+j2]*yi;
             }
         }

@@ -133,7 +133,7 @@ namespace system_params
 // Astrometrics system parametersß
 namespace astro_params
 {
-    long nStar = 10000,
+    long nStar = 10000, //200000
          nAstroParam=0,
          VrIdAstroPDimMax=0,
          VrIdAstroPDim=0;
@@ -164,8 +164,6 @@ namespace att_params
          nAttParam=0,
          offsetAttParam=0,
          VroffsetAttParam=0;
-
-
 
     int numOfExtAttCol=0;
 
