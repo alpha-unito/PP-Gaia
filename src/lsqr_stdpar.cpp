@@ -67,7 +67,7 @@ CPP PSTL Version
     #include "counting_iterator.hpp"
     #include <atomic>
     #include <CL/sycl.hpp>
-    #define atomicAdd(x, y) (cl::sycl::atomic_ref<double, cl::sycl::memory_order::relaxed, cl::sycl::memory_scope::work_group, cl::sycl::access::address_space::generic_space>(*(x)) +=(y))
+    #define atomicAdd(x, y) (cl::sycl::atomic_ref<double, cl::sycl::memory_order::relaxed, cl::sycl::memory_scope::device, cl::sycl::access::address_space::global_space>(*(x)) +=(y))
 #endif
 
 

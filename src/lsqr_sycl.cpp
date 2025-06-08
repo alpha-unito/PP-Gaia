@@ -98,7 +98,9 @@ static const int THREADS_PER_WRAPS=32;
 #endif
 
 
-#define atomicAdd(x, y) (sycl::atomic_ref<double, sycl::memory_order::relaxed, sycl::memory_scope::work_group, sycl::access::address_space::generic_space>(*(x)) +=(y))
+// #define atomicAdd(x, y) (sycl::atomic_ref<double, sycl::memory_order::relaxed, sycl::memory_scope::work_group, sycl::access::address_space::generic_space>(*(x)) +=(y))
+
+#define atomicAdd(x, y) (sycl::atomic_ref<double, sycl::memory_order::relaxed, sycl::memory_scope::device, sycl::access::address_space::global_space>(*(x)) +=(y))
 
 
 __inline__ double warpReduceSum(double val, const sycl::nd_item<3> &item_ct1) {
