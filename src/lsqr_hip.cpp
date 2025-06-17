@@ -1978,7 +1978,7 @@ if (beta > ZERO)
         if(!myid) printf("Average iteration time: %lf \n", totTimeIteration/itn);
         MPI_Allreduce(MPI_IN_PLACE, &maxavtime, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
         if(!myid) printf("Max Average iteration time: %lf \n",maxavtime);
-    #else
+    #elif defined(KERNELTIME)
         printf("Average iteration time: %lf \n", totTimeIteration.count()/itn);
         printf("Average kernel Aprod1Astro time: %lf \n", 1e-3*timekernel[0]/itn);
         printf("Average kernel Aprod1Att time: %lf \n", 1e-3*timekernel[1]/itn);
@@ -1986,6 +1986,8 @@ if (beta > ZERO)
         printf("Average kernel Aprod2Astro time: %lf \n", 1e-3*timekernel[3]/itn);
         printf("Average kernel Aprod2Att time: %lf \n", 1e-3*timekernel[4]/itn);
         printf("Average kernel Aprod2Instr time: %lf \n", 1e-3*timekernel[5]/itn);
+    #else
+        printf("Average iteration time: %lf \n", totTimeIteration.count()/itn);
     #endif
 
 

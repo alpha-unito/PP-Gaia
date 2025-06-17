@@ -73,7 +73,7 @@ OPTSTDPARG	= $(OPTCOM) -std=c++20 --gcc-toolchain=$(GNUTOOLCHAIN) --acpp-platfor
 OPTOMPGPU   = $(OPTCOM) -std=c++20 --gcc-toolchain=$(GNUTOOLCHAIN) -mp=gpu -gpu=$(GPUFLAG),$(GPUARCH)
 OPTHIP 		= $(OPTCOM) $(CUDAFLAG) --gpu-architecture=$(GPUARCH)
 OPTOPENACC  = $(OPTCOM) -acc -O3 -gpu=$(GPUFLAG) -DAUTO_TUNING 
-OPTKOKKOS	= $(CUDAFLAG) -gencode=$(GENCODE) -fopenmp -extended-lambda
+OPTKOKKOS	= $(OPTCOM) $(CUDAFLAG) -gencode=$(GENCODE) -fopenmp -extended-lambda
 
 ###---###
 CPPCUDA		= $(CMPCUDA)	 $(OPTCUDA)
