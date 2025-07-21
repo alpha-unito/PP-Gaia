@@ -70,8 +70,9 @@ inline void init_comlsqr(struct comData *comlsqr, long int *mapNoss, long int *m
     comlsqr->offsetAttParam = att_params::offsetAttParam;
 }
 
-inline void set_comlsqr_offsets(struct comData *comlsqr, int nCCDs, int nFoVs, int nPixelColumns, int nTimeIntervals){
-    comlsqr->offsetCMag = instr_params::maInstrFlag * nCCDs;                                           // offest=0 if maInstrFlag=0
+inline void set_comlsqr_offsets(struct comData *comlsqr, int nCCDs, int nFoVs, int nPixelColumns, int nTimeIntervals)
+{
+    comlsqr->offsetCMag = instr_params::maInstrFlag * nCCDs;                                            // offest=0 if maInstrFlag=0
     comlsqr->offsetCnu = comlsqr->offsetCMag + instr_params::nuInstrFlag * nFoVs * nCCDs;               // offest=offsetCMag if nuInstrFlag=0
     comlsqr->offsetCdelta_eta = comlsqr->offsetCnu + instr_params::ssInstrFlag * nCCDs * nPixelColumns; // offest=offsetCnu if ssInstrFlag=0
     comlsqr->offsetCDelta_eta_1 = comlsqr->offsetCdelta_eta + instr_params::lsInstrFlag * nFoVs * nCCDs * nTimeIntervals;
