@@ -1,15 +1,16 @@
 #include "namespaces.hpp"
 
-void compute_system_preconditioning(const long *const &mapNoss, 
-                                    const long *const &matrixIndexAstro, 
-                                    const long *const &matrixIndexAtt, 
-                                    const double *const &sysmatAstro, 
-                                    const double *const &sysmatAtt, 
-                                    const double *const &sysmatInstr, 
-                                    const double *const &sysmatGloB, 
-                                    const double *const &sysmatConstr, 
-                                    int **const &mapStar, 
-                                    double *const &preCondVect){
+void compute_system_preconditioning(const long *const &mapNoss,
+                                    const long *const &matrixIndexAstro,
+                                    const long *const &matrixIndexAtt,
+                                    const double *const &sysmatAstro,
+                                    const double *const &sysmatAtt,
+                                    const double *const &sysmatInstr,
+                                    const double *const &sysmatGloB,
+                                    const double *const &sysmatConstr,
+                                    int **const &mapStar,
+                                    double *const &preCondVect)
+{
 
     long int ConstrIndex = 0, astroIndex = 0, attPIndex = 0, InstrIndex = 0, GlobIndex = 0;
 
@@ -30,14 +31,15 @@ void compute_system_preconditioning(const long *const &mapNoss,
                 long ncolumn = VrIdAstroPValue * astro_params::nAstroPSolved + ns;
                 if (ncolumn >= system_params::nunkSplit || ncolumn < 0)
                 {
-                    printf("ERROR. PE=%d ncolumn=%ld ii=%ld matrixIndex[ii]=%ld\n", system_params::myid, ncolumn, ii,matrixIndexAstro[ii]);
+                    printf("ERROR. PE=%d ncolumn=%ld ii=%ld matrixIndex[ii]=%ld\n", system_params::myid, ncolumn, ii, matrixIndexAstro[ii]);
                     abort();
                 }
 
                 lsqr_arrs::preCondVect[ncolumn] += sysmatAstro[astroIndex] * sysmatAstro[astroIndex];
                 ++astroIndex;
 
-                if (lsqr_arrs::preCondVect[ncolumn] == 0.0)printf("Astrometric: preCondVect[%ld]=0.0\n", ncolumn);
+                if (lsqr_arrs::preCondVect[ncolumn] == 0.0)
+                    printf("Astrometric: preCondVect[%ld]=0.0\n", ncolumn);
             }
         }
     }
@@ -109,7 +111,7 @@ void compute_system_preconditioning(const long *const &mapNoss,
                 long ncolumn = glob_params::offsetGlobParam + (att_params::VroffsetAttParam - att_params::offsetAttParam) + ns;
                 if (ncolumn >= system_params::nunkSplit || ncolumn < 0)
                 {
-                    printf("ERROR. PE=%d ncolumn=%ld ii=%ld matrixIndex[ii+2]=%ld\n", system_params::myid, ncolumn, ii,matrixIndexAstro[ii]);
+                    printf("ERROR. PE=%d ncolumn=%ld ii=%ld matrixIndex[ii+2]=%ld\n", system_params::myid, ncolumn, ii, matrixIndexAstro[ii]);
                     abort();
                 }
 
@@ -143,7 +145,7 @@ void compute_system_preconditioning(const long *const &mapNoss,
                 ////
                 if (ncolumn >= system_params::nunkSplit || ncolumn < 0)
                 {
-                    printf("ERROR. PE=%d ncolumn=%ld ii=%d matrixIndex[ii]=%ld\n", system_params::myid, ncolumn, i,matrixIndexAstro[i]);
+                    printf("ERROR. PE=%d ncolumn=%ld ii=%d matrixIndex[ii]=%ld\n", system_params::myid, ncolumn, i, matrixIndexAstro[i]);
                     abort();
                 }
                 lsqr_arrs::preCondVect[ncolumn] += sysmatConstr[ConstrIndex] * sysmatConstr[ConstrIndex];
@@ -197,12 +199,13 @@ void compute_system_preconditioning(const long *const &mapNoss,
                 ////
                 if (ncolumn >= system_params::nunkSplit || ncolumn < 0)
                 {
-                    printf("ERROR. PE=%d ncolumn=%ld ii=%d matrixIndex[ii]=%ld\n", system_params::myid, ncolumn, i,matrixIndexAstro[i]);
+                    printf("ERROR. PE=%d ncolumn=%ld ii=%d matrixIndex[ii]=%ld\n", system_params::myid, ncolumn, i, matrixIndexAstro[i]);
                     abort();
                 }
                 lsqr_arrs::preCondVect[ncolumn] += sysmatConstr[ConstrIndex] * sysmatConstr[ConstrIndex];
                 ConstrIndex++;
-                if (lsqr_arrs::preCondVect[ncolumn] == 0.0) printf("Astrometric: preCondVect[%ld]=0.0\n", ncolumn);
+                if (lsqr_arrs::preCondVect[ncolumn] == 0.0)
+                    printf("Astrometric: preCondVect[%ld]=0.0\n", ncolumn);
             }
             //
         }
@@ -226,219 +229,214 @@ void compute_system_preconditioning(const long *const &mapNoss,
     ////////////////
 }
 
+void testing_well_poseness(double *const &preCondVect,
+                           const int &precond,
+                           const int &myid,
+                           const long &VrIdAstroPDim,
+                           const long &VrIdAstroPDimMax,
+                           const long &nAttParam,
+                           const long &nInstrParam,
+                           const long &nGlobalParam,
+                           const short &nAstroPSolved)
+{
 
-
-    void testing_well_poseness(double *const& preCondVect,
-                                const int& precond,
-                                const int& myid, 
-                                const long& VrIdAstroPDim, 
-                                const long&VrIdAstroPDimMax,
-                                const long& nAttParam,
-                                const long& nInstrParam, 
-                                const long& nGlobalParam, 
-                                const short& nAstroPSolved){
-
-        if (precond)
+    if (precond)
+    {
+        if (myid == 0)
+            printf("Inverting preCondVect\n");
+        for (long ii = 0; ii < VrIdAstroPDim * nAstroPSolved; ii++)
         {
-            if (myid == 0)
-                printf("Inverting preCondVect\n");
-            for (long ii = 0; ii < VrIdAstroPDim * nAstroPSolved; ii++)
+            if (preCondVect[ii] == 0.0)
             {
-                if (preCondVect[ii] == 0.0)
-                {
-                    if (ii - VrIdAstroPDimMax * nAstroPSolved < nAttParam)
-                        printf("ERROR Att ZERO column: PE=%d preCondVect[%ld]=0.0 AttParam=%ld \n", myid, ii,ii - VrIdAstroPDimMax * nAstroPSolved);
-                    if (ii - VrIdAstroPDimMax * nAstroPSolved > nAttParam && ii - VrIdAstroPDimMax * nAstroPSolved < nAttParam + nInstrParam)
-                        printf("ERROR Instr ZERO column: PE=%d preCondVect[%ld]=0.0 InstrParam=%ld \n", myid, ii,ii - (VrIdAstroPDimMax * nAstroPSolved + nAttParam));
-                    if (ii - VrIdAstroPDimMax * nAstroPSolved > nAttParam + nInstrParam)
-                        printf("ERROR Global ZERO column: PE=%d preCondVect[%ld]=0.0 GlobalParam=%ld \n", myid, ii, ii - (VrIdAstroPDimMax * nAstroPSolved + nAttParam + nInstrParam));
-                    abort();
-                }
-                preCondVect[ii] = 1.0 / sqrt(preCondVect[ii]);
+                if (ii - VrIdAstroPDimMax * nAstroPSolved < nAttParam)
+                    printf("ERROR Att ZERO column: PE=%d preCondVect[%ld]=0.0 AttParam=%ld \n", myid, ii, ii - VrIdAstroPDimMax * nAstroPSolved);
+                if (ii - VrIdAstroPDimMax * nAstroPSolved > nAttParam && ii - VrIdAstroPDimMax * nAstroPSolved < nAttParam + nInstrParam)
+                    printf("ERROR Instr ZERO column: PE=%d preCondVect[%ld]=0.0 InstrParam=%ld \n", myid, ii, ii - (VrIdAstroPDimMax * nAstroPSolved + nAttParam));
+                if (ii - VrIdAstroPDimMax * nAstroPSolved > nAttParam + nInstrParam)
+                    printf("ERROR Global ZERO column: PE=%d preCondVect[%ld]=0.0 GlobalParam=%ld \n", myid, ii, ii - (VrIdAstroPDimMax * nAstroPSolved + nAttParam + nInstrParam));
+                abort();
             }
-            for (long ii = VrIdAstroPDimMax * nAstroPSolved;
-                ii < VrIdAstroPDimMax * nAstroPSolved + nAttParam + nInstrParam + nGlobalParam; ii++)
-            {
-                if (preCondVect[ii] == 0.0)
-                {
-                    printf("ERROR non-Astrometric ZERO column: PE=%d preCondVect[%ld]=0.0\n", myid, ii);
-                    abort();
-                }
-                preCondVect[ii] = 1.0 / sqrt(preCondVect[ii]);
-            }
+            preCondVect[ii] = 1.0 / sqrt(preCondVect[ii]);
         }
-        else
+        for (long ii = VrIdAstroPDimMax * nAstroPSolved;
+             ii < VrIdAstroPDimMax * nAstroPSolved + nAttParam + nInstrParam + nGlobalParam; ii++)
         {
-            if (myid == 0)
-                printf("Setting preCondVect to 1.0\n");
-            for (long ii = 0; ii < VrIdAstroPDim * nAstroPSolved; ii++)
+            if (preCondVect[ii] == 0.0)
             {
-                if (preCondVect[ii] == 0.0)
-                {
-                    printf("ERROR Astrometric ZERO column: PE=%d preCondVect[%ld]=0.0 Star=%ld\n", myid, ii,ii / nAstroPSolved);
-                    abort();
-                }
-                preCondVect[ii] = 1.0;
+                printf("ERROR non-Astrometric ZERO column: PE=%d preCondVect[%ld]=0.0\n", myid, ii);
+                abort();
             }
-            for (long ii = VrIdAstroPDimMax * nAstroPSolved;
-                ii < VrIdAstroPDimMax * nAstroPSolved + nAttParam + nInstrParam + nGlobalParam; ii++)
-            {
-                if (preCondVect[ii] == 0.0)
-                {
-                    if (ii - VrIdAstroPDimMax * nAstroPSolved < nAttParam)
-                        printf("ERROR Att ZERO column: PE=%d preCondVect[%ld]=0.0 AttParam=%ld \n", myid, ii, ii - VrIdAstroPDimMax * nAstroPSolved);
-                    if (ii - VrIdAstroPDimMax * nAstroPSolved > nAttParam && ii - VrIdAstroPDimMax * nAstroPSolved < nAttParam + nInstrParam)
-                        printf("ERROR Instr ZERO column: PE=%d preCondVect[%ld]=0.0 InstrParam=%ld \n", myid, ii, ii - (VrIdAstroPDimMax * nAstroPSolved + nAttParam));
-                    if (ii - VrIdAstroPDimMax * nAstroPSolved > nAttParam + nInstrParam)
-                        printf("ERROR Global ZERO column: PE=%d preCondVect[%ld]=0.0 GlobalParam=%ld \n", myid, ii, ii - (VrIdAstroPDimMax * nAstroPSolved + nAttParam + nInstrParam));
-                    abort();
-                }
-                preCondVect[ii] = 1.0;
-            }
+            preCondVect[ii] = 1.0 / sqrt(preCondVect[ii]);
         }
+    }
+    else
+    {
+        if (myid == 0)
+            printf("Setting preCondVect to 1.0\n");
+        for (long ii = 0; ii < VrIdAstroPDim * nAstroPSolved; ii++)
+        {
+            if (preCondVect[ii] == 0.0)
+            {
+                printf("ERROR Astrometric ZERO column: PE=%d preCondVect[%ld]=0.0 Star=%ld\n", myid, ii, ii / nAstroPSolved);
+                abort();
+            }
+            preCondVect[ii] = 1.0;
+        }
+        for (long ii = VrIdAstroPDimMax * nAstroPSolved;
+             ii < VrIdAstroPDimMax * nAstroPSolved + nAttParam + nInstrParam + nGlobalParam; ii++)
+        {
+            if (preCondVect[ii] == 0.0)
+            {
+                if (ii - VrIdAstroPDimMax * nAstroPSolved < nAttParam)
+                    printf("ERROR Att ZERO column: PE=%d preCondVect[%ld]=0.0 AttParam=%ld \n", myid, ii, ii - VrIdAstroPDimMax * nAstroPSolved);
+                if (ii - VrIdAstroPDimMax * nAstroPSolved > nAttParam && ii - VrIdAstroPDimMax * nAstroPSolved < nAttParam + nInstrParam)
+                    printf("ERROR Instr ZERO column: PE=%d preCondVect[%ld]=0.0 InstrParam=%ld \n", myid, ii, ii - (VrIdAstroPDimMax * nAstroPSolved + nAttParam));
+                if (ii - VrIdAstroPDimMax * nAstroPSolved > nAttParam + nInstrParam)
+                    printf("ERROR Global ZERO column: PE=%d preCondVect[%ld]=0.0 GlobalParam=%ld \n", myid, ii, ii - (VrIdAstroPDimMax * nAstroPSolved + nAttParam + nInstrParam));
+                abort();
+            }
+            preCondVect[ii] = 1.0;
+        }
+    }
+}
 
+std::tuple<double, double, double> de_preconditioning(double *const &xSolution,
+                                                      double *const &standardError,
+                                                      const double *const &preCondVect,
+                                                      const long &nunkSplit,
+                                                      const long &VroffsetAttParam,
+                                                      const long &VrIdAstroPDim,
+                                                      const int &myid,
+                                                      const int &idtest,
+                                                      const short &nAstroPSolved)
+{
+    long thetaCol = 0, muthetaCol = 0, flagTheta = 0, flagMuTheta = 0;
+    ldiv_t res_ldiv;
+
+    switch (nAstroPSolved)
+    {
+    case 2:
+        thetaCol = 1;
+        muthetaCol = 0;
+        break;
+    case 3:
+        thetaCol = 2;
+        muthetaCol = 0;
+        break;
+    case 4:
+        thetaCol = 1;
+        muthetaCol = 3;
+        break;
+    case 5:
+        thetaCol = 2;
+        muthetaCol = 4;
+        break;
+    default:
+        break;
     }
 
+    double epsilon, localSumX = 0, localSumXsq = 0, sumX = 0, sumXsq = 0, dev = 0, localMaxDev = 0, maxDev = 0;
 
-
-std::tuple<double,double,double> de_preconditioning(double *const& xSolution,
-                        double *const& standardError,
-                        const double * const& preCondVect,
-                        const long& nunkSplit,
-                        const long& VroffsetAttParam,
-                        const long& VrIdAstroPDim,
-                        const int& myid,
-                        const int& idtest,
-                        const short& nAstroPSolved){
-        long thetaCol = 0, muthetaCol = 0, flagTheta = 0, flagMuTheta = 0;
-        ldiv_t res_ldiv;
-
-        switch (nAstroPSolved)
+    ///////// Each PE runs over the its Astrometric piece
+    if (muthetaCol == 0)
+        for (long ii = 0; ii < VrIdAstroPDim * nAstroPSolved; ii++)
         {
-        case 2:
-            thetaCol = 1;
-            muthetaCol = 0;
-            break;
-        case 3:
-            thetaCol = 2;
-            muthetaCol = 0;
-            break;
-        case 4:
-            thetaCol = 1;
-            muthetaCol = 3;
-            break;
-        case 5:
-            thetaCol = 2;
-            muthetaCol = 4;
-            break;
-        default:
-            break;
-        }
-
-        double epsilon, localSumX = 0, localSumXsq = 0, sumX = 0, sumXsq = 0, dev = 0, localMaxDev = 0, maxDev = 0;
-
-        ///////// Each PE runs over the its Astrometric piece
-        if (muthetaCol == 0)
-            for (long ii = 0; ii < VrIdAstroPDim * nAstroPSolved; ii++)
+            res_ldiv = ldiv((ii - thetaCol), nAstroPSolved);
+            flagTheta = res_ldiv.rem;
+            if (flagTheta == 0)
             {
-                res_ldiv = ldiv((ii - thetaCol), nAstroPSolved);
-                flagTheta = res_ldiv.rem;
-                if (flagTheta == 0)
-                {
-                    xSolution[ii] *= (-preCondVect[ii]);
-                    if (idtest)
-                    {
-                        epsilon = xSolution[ii] + 1.0;
-                        localSumX -= epsilon;
-                        dev = fabs(epsilon);
-                        if (dev > localMaxDev)
-                            localMaxDev = dev;
-                    }
-                }
-                else
-                {
-                    xSolution[ii] *= preCondVect[ii]; // the corrections in theta are converted for consistency with the naming conventions in the Data Model to corrections in delta by a change of sign (Mantis Issue 0013081)
-                    if (idtest)
-                    {
-                        epsilon = xSolution[ii] - 1.0;
-                        localSumX += epsilon;
-                        dev = fabs(epsilon);
-                        if (dev > localMaxDev)
-                            localMaxDev = dev;
-                    }
-                }
-                if (idtest)
-                    localSumXsq += epsilon * epsilon;
-                standardError[ii] *= preCondVect[ii];
-            }
-        else
-            for (long ii = 0; ii < VrIdAstroPDim * nAstroPSolved; ii++)
-            {
-                res_ldiv = ldiv((ii - thetaCol), nAstroPSolved);
-                flagTheta = res_ldiv.rem;
-                res_ldiv = ldiv((ii - muthetaCol), nAstroPSolved);
-                flagMuTheta = res_ldiv.rem;
-                if ((flagTheta == 0) || (flagMuTheta == 0))
-                {
-                    xSolution[ii] *= (-preCondVect[ii]);
-                    if (idtest)
-                    {
-                        epsilon = xSolution[ii] + 1.0;
-                        localSumX -= epsilon;
-                        dev = fabs(epsilon);
-                        if (dev > localMaxDev)
-                            localMaxDev = dev;
-                    }
-                }
-                else
-                {
-                    xSolution[ii] *= preCondVect[ii]; // the corrections in theta are converted for consistency with the naming conventions in the Data Model to corrections in delta by a change of sign (Mantis Issue 0013081)
-                    if (idtest)
-                    {
-                        epsilon = xSolution[ii] - 1.0;
-                        localSumX += epsilon;
-                        dev = fabs(epsilon);
-                        if (dev > localMaxDev)
-                            localMaxDev = dev;
-                    }
-                }
-                if (idtest)
-                    localSumXsq += epsilon * epsilon;
-                standardError[ii] *= preCondVect[ii];
-            }
-        //////////// End of de-preconditioning for the Astrometric unknowns
-
-        //////////// Then only PE=0 runs over the shared unknowns (Attitude, Instrument, and Global)
-        if (myid == 0)
-            for (long ii = VroffsetAttParam; ii < nunkSplit; ii++)
-            {
-                xSolution[ii] *= preCondVect[ii];
+                xSolution[ii] *= (-preCondVect[ii]);
                 if (idtest)
                 {
-                    localSumX += (xSolution[ii] - 1.0);
-                    dev = fabs(1.0 - xSolution[ii]);
+                    epsilon = xSolution[ii] + 1.0;
+                    localSumX -= epsilon;
+                    dev = fabs(epsilon);
                     if (dev > localMaxDev)
                         localMaxDev = dev;
-                    localSumXsq += (xSolution[ii] - 1.0) * (xSolution[ii] - 1.0);
                 }
-                standardError[ii] *= preCondVect[ii];
             }
-        //////////// End of de-preconditioning for the shared unknowns
-
-        if (idtest)
-        {
-            #ifdef USE_MPI
-                MPI_Reduce(&localSumX, &sumX, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-                MPI_Reduce(&localSumXsq, &sumXsq, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-                MPI_Reduce(&localMaxDev, &maxDev, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-            #else
-                sumX=localSumX;
-                sumXsq=localSumXsq;
-                maxDev=localMaxDev;
-            #endif
+            else
+            {
+                xSolution[ii] *= preCondVect[ii]; // the corrections in theta are converted for consistency with the naming conventions in the Data Model to corrections in delta by a change of sign (Mantis Issue 0013081)
+                if (idtest)
+                {
+                    epsilon = xSolution[ii] - 1.0;
+                    localSumX += epsilon;
+                    dev = fabs(epsilon);
+                    if (dev > localMaxDev)
+                        localMaxDev = dev;
+                }
+            }
+            if (idtest)
+                localSumXsq += epsilon * epsilon;
+            standardError[ii] *= preCondVect[ii];
         }
+    else
+        for (long ii = 0; ii < VrIdAstroPDim * nAstroPSolved; ii++)
+        {
+            res_ldiv = ldiv((ii - thetaCol), nAstroPSolved);
+            flagTheta = res_ldiv.rem;
+            res_ldiv = ldiv((ii - muthetaCol), nAstroPSolved);
+            flagMuTheta = res_ldiv.rem;
+            if ((flagTheta == 0) || (flagMuTheta == 0))
+            {
+                xSolution[ii] *= (-preCondVect[ii]);
+                if (idtest)
+                {
+                    epsilon = xSolution[ii] + 1.0;
+                    localSumX -= epsilon;
+                    dev = fabs(epsilon);
+                    if (dev > localMaxDev)
+                        localMaxDev = dev;
+                }
+            }
+            else
+            {
+                xSolution[ii] *= preCondVect[ii]; // the corrections in theta are converted for consistency with the naming conventions in the Data Model to corrections in delta by a change of sign (Mantis Issue 0013081)
+                if (idtest)
+                {
+                    epsilon = xSolution[ii] - 1.0;
+                    localSumX += epsilon;
+                    dev = fabs(epsilon);
+                    if (dev > localMaxDev)
+                        localMaxDev = dev;
+                }
+            }
+            if (idtest)
+                localSumXsq += epsilon * epsilon;
+            standardError[ii] *= preCondVect[ii];
+        }
+    //////////// End of de-preconditioning for the Astrometric unknowns
 
+    //////////// Then only PE=0 runs over the shared unknowns (Attitude, Instrument, and Global)
+    if (myid == 0)
+        for (long ii = VroffsetAttParam; ii < nunkSplit; ii++)
+        {
+            xSolution[ii] *= preCondVect[ii];
+            if (idtest)
+            {
+                localSumX += (xSolution[ii] - 1.0);
+                dev = fabs(1.0 - xSolution[ii]);
+                if (dev > localMaxDev)
+                    localMaxDev = dev;
+                localSumXsq += (xSolution[ii] - 1.0) * (xSolution[ii] - 1.0);
+            }
+            standardError[ii] *= preCondVect[ii];
+        }
+    //////////// End of de-preconditioning for the shared unknowns
 
-        return std::make_tuple(sumX,sumXsq,maxDev);
-
+    if (idtest)
+    {
+#ifdef USE_MPI
+        MPI_Reduce(&localSumX, &sumX, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+        MPI_Reduce(&localSumXsq, &sumXsq, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+        MPI_Reduce(&localMaxDev, &maxDev, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+#else
+        sumX = localSumX;
+        sumXsq = localSumXsq;
+        maxDev = localMaxDev;
+#endif
     }
+
+    return std::make_tuple(sumX, sumXsq, maxDev);
+}

@@ -13,31 +13,30 @@
         action;
 
 #ifdef USE_MPI
-    inline void abort(){
-        MPI_Barrier(MPI_COMM_WORLD);
-        MPI_Abort(MPI_COMM_WORLD, 11);
-    }
+inline void abort()
+{
+    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Abort(MPI_COMM_WORLD, 11);
+}
 #else
-    inline void abort(){
-        exit(EXIT_FAILURE);
-    }
+inline void abort()
+{
+    exit(EXIT_FAILURE);
+}
 #endif
-
-
-
 
 inline void parse_cli(int argc, char **argv, int *zeroAtt, int *zeroInstr, int *zeroGlob)
 {
     if (argc == 1)
     {
-        #ifdef USE_MPI
-            ACTION_IF_RANK_0(system_params::myid, printf("Usage:  solvergaiaSim  [-memGlobal value]  [-IDtest [value]   -noFile -noConstr -numFilexproc nfileProc -Precond [on|off] -timeCPR hours -timelimit hours -itnCPR numberOfIterations -nth numoerOfOMPThreads -itnlimit numberOfIterations   -atol value  -inputDir inputdir -outputDir outputdir -zeroAtt -zeroInstr -zeroGlob -wgic value]] -wrfilebin writedir  -extConstr weight -barConstr weight \n\n"));
-        #else
-            printf("Usage:  solvergaiaSim  [-memGlobal value]  [-IDtest [value]   -noFile -noConstr -numFilexproc nfileProc -Precond [on|off] -timeCPR hours -timelimit hours -itnCPR numberOfIterations -nth numoerOfOMPThreads -itnlimit numberOfIterations   -atol value  -inputDir inputdir -outputDir outputdir -zeroAtt -zeroInstr -zeroGlob -wgic value]] -wrfilebin writedir  -extConstr weight -barConstr weight \n\n");
-        #endif
+#ifdef USE_MPI
+        ACTION_IF_RANK_0(system_params::myid, printf("Usage:  solvergaiaSim  [-memGlobal value]  [-IDtest [value]   -noFile -noConstr -numFilexproc nfileProc -Precond [on|off] -timeCPR hours -timelimit hours -itnCPR numberOfIterations -nth numoerOfOMPThreads -itnlimit numberOfIterations   -atol value  -inputDir inputdir -outputDir outputdir -zeroAtt -zeroInstr -zeroGlob -wgic value]] -wrfilebin writedir  -extConstr weight -barConstr weight \n\n"));
+#else
+        printf("Usage:  solvergaiaSim  [-memGlobal value]  [-IDtest [value]   -noFile -noConstr -numFilexproc nfileProc -Precond [on|off] -timeCPR hours -timelimit hours -itnCPR numberOfIterations -nth numoerOfOMPThreads -itnlimit numberOfIterations   -atol value  -inputDir inputdir -outputDir outputdir -zeroAtt -zeroInstr -zeroGlob -wgic value]] -wrfilebin writedir  -extConstr weight -barConstr weight \n\n");
+#endif
         abort();
     }
-    
+
     for (int i = 0; i < argc; i++)
     {
         if (strcmp(argv[i], "-memGlobal") == 0)
@@ -146,10 +145,7 @@ inline void fill_system(double *const &sysmatAstro,
         instrEndFreedom = instr_params::nInstrParam - 1;
     long currentStar = 0;
 
-    // int constraintFound[MAX_CONSTR][2]; // first: number of file of the constraint; second: row in file
     int residual = 0;
-    // int obsStarnow;
-    // int numOfObslast = 0;
     int freedomReached = 0;
     int instrFreedomReached = 0;
     int isConstraint = 0;
@@ -168,27 +164,25 @@ inline void fill_system(double *const &sysmatAstro,
                     obsTotal++;
             }
             else
-            { 
+            {
                 obsTotal = residual;
                 residual = 0;
             }
 
             if (obsTotal <= mapNoss[p])
                 startingStar++;
-        } 
+        }
         residual = obsTotal - mapNoss[p];
         obsTotal = 0;
-    } 
+    }
     //////////////////////////
 
     //////////////// filling the system
     currentStar = startingStar;
     obsStar = residual;
 
-
     srand(system_params::myid);
     // srand(42);
-
 
     if (obsStar == 0)
     {
@@ -196,7 +190,6 @@ inline void fill_system(double *const &sysmatAstro,
         if (currentStar < nobsOri % astro_params::nStar)
             obsStar++;
     }
-    // obsStarnow = obsStar;
 
     int offsetConstraint = isConstraint - obsStar; // number of constraint alredy computed in the previous PE
     if (offsetConstraint < 0)
@@ -232,8 +225,6 @@ inline void fill_system(double *const &sysmatAstro,
             if ((obsStar - counterStarObs) <= isConstraint)
             { // constraint
                 matrixIndexAtt[ii] = att_params::offsetAttParam;
-                // constraintFound[counterConstr][0] = currentStar / 1000;
-                // constraintFound[counterConstr][1] = rowInFile;
                 counterConstr++;
 
                 if (counterConstr == MAX_CONSTR)
@@ -261,8 +252,6 @@ inline void fill_system(double *const &sysmatAstro,
             if ((obsStar - counterStarObs) <= isConstraint) // constraint
             {
                 lastFreedom = 0;
-                // constraintFound[counterConstr][0] = currentStar / 1000;
-                // constraintFound[counterConstr][1] = rowInFile;
                 counterConstr++;
             }
             matrixIndexAtt[ii] = att_params::offsetAttParam + lastFreedom;
@@ -319,7 +308,7 @@ inline void fill_system(double *const &sysmatAstro,
             for (short q = 0; q < glob_params::nGlobP; q++)
                 sysmatGloB[ii * glob_params::nGlobP + q] = (((double)rand()) / RAND_MAX) * 2 - 1.0;
         }
-        else 
+        else
         {
 
             for (short q = 0; q < astro_params::nAstroPSolved; q++)
@@ -336,8 +325,6 @@ inline void fill_system(double *const &sysmatAstro,
 
                 if (ii != 0)
                     offsetConstraint = 0;
-                // int foundedConstraint = (obsStar - counterStarObs) + offsetConstraint;
-                // int itis = 0;
             }
             ++ic;
         }
@@ -345,7 +332,7 @@ inline void fill_system(double *const &sysmatAstro,
         /////////////////////////
         if ((obsStar - counterStarObs) <= isConstraint)
         {
-            printf("PE=%d isConstraint=%d ii=%ld matrixIndex[ii*2]=%ld matrixIndex[ii*2+1]=%ld\n", system_params::myid, isConstraint,ii, matrixIndexAstro[ii], matrixIndexAtt[ii]);
+            printf("PE=%d isConstraint=%d ii=%ld matrixIndex[ii*2]=%ld matrixIndex[ii*2+1]=%ld\n", system_params::myid, isConstraint, ii, matrixIndexAstro[ii], matrixIndexAtt[ii]);
             printf("\n");
         }
 
@@ -353,8 +340,6 @@ inline void fill_system(double *const &sysmatAstro,
         counterStarObs++;
         if (counterStarObs == obsStar)
         {
-            // if (system_params::myid == (system_params::nproc - 1))
-                // numOfObslast = counterStarObs;
             counterStarObs = 0;
             currentStar++;
             changedStar = 1;
@@ -368,8 +353,7 @@ inline void fill_system(double *const &sysmatAstro,
             lsqr_arrs::knownTerms[ii] =
                 (((double)rand()) / RAND_MAX) * 2.0 - 1.0; // show idtest=1  at the beginning instead of =0
         /////////////////////////////////////////
-
-    } 
+    }
 
     if (!freedomReached && !zeroAtt)
     {
@@ -383,11 +367,8 @@ inline void fill_system(double *const &sysmatAstro,
     }
 }
 
-
-
-
 template <typename T>
-inline void work_distribution(const T &mapNoss, const T &mapNcoeff, const long& nobs, const int& nproc, const int& nparam, const int& myid)
+inline void work_distribution(const T &mapNoss, const T &mapNcoeff, const long &nobs, const int &nproc, const int &nparam, const int &myid)
 {
 
     long int mapNcoeffBefore{0};
@@ -395,7 +376,7 @@ inline void work_distribution(const T &mapNoss, const T &mapNcoeff, const long& 
 
     for (int i = 0; i < nproc; i++)
     {
-        mapNoss[i] = (nobs)/nproc;
+        mapNoss[i] = (nobs) / nproc;
         if (nobs % nproc >= i + 1)
             mapNoss[i]++;
         mapNcoeff[i] = mapNoss[i] * nparam;
@@ -492,11 +473,6 @@ void barNobxStarfile(const long *const &mapNoss)
 
 inline void print_params(long int numberOfCovEle)
 {
-    // if (system_params::memGlobal != 0)
-    // {
-    //     auto memGB = simfullram(&(astro_params::nStar), &system_params::nobs, system_params::memGlobal, system_params::nparam, att_params::nAttParam, instr_params::nInstrParam);
-    //     printf("Running with memory %f GB, nStar=%ld nobs=%ld\n", memGB, astro_params::nStar, system_params::nobs);
-    // }
     printf("atol= %18.15lf\n", lsqr_input::atol);
     printf("btol= %18.15lf\n", lsqr_input::btol);
     printf("conlim= %18.15le\n", lsqr_input::conlim);
@@ -560,44 +536,44 @@ inline void print_cmdline_input(int nfileProc, int itnCPR, int zeroAtt, int zero
 
 void find_mapStar(int **const &mapStar, const int &nproc, const int &myid, const int &firstStar, const int &lastStar)
 {
-    #ifdef USE_MPI
-        int **tempStarSend, **tempStarRecv;
-        tempStarSend = (int **)calloc(nproc, sizeof(int *));
-        for (int i = 0; i < nproc; i++)
-            tempStarSend[i] = (int *)calloc(2, sizeof(int));
-        tempStarRecv = (int **)calloc(nproc, sizeof(int *));
-        for (int i = 0; i < nproc; i++)
-            tempStarRecv[i] = (int *)calloc(2, sizeof(int));
+#ifdef USE_MPI
+    int **tempStarSend, **tempStarRecv;
+    tempStarSend = (int **)calloc(nproc, sizeof(int *));
+    for (int i = 0; i < nproc; i++)
+        tempStarSend[i] = (int *)calloc(2, sizeof(int));
+    tempStarRecv = (int **)calloc(nproc, sizeof(int *));
+    for (int i = 0; i < nproc; i++)
+        tempStarRecv[i] = (int *)calloc(2, sizeof(int));
 
-        int *testVectSend, *testVectRecv;
-        testVectSend = (int *)calloc(2 * nproc, sizeof(int));
-        testVectRecv = (int *)calloc(2 * nproc, sizeof(int));
-        testVectSend[2 * myid] = firstStar;
-        testVectSend[2 * myid + 1] = lastStar;
+    int *testVectSend, *testVectRecv;
+    testVectSend = (int *)calloc(2 * nproc, sizeof(int));
+    testVectRecv = (int *)calloc(2 * nproc, sizeof(int));
+    testVectSend[2 * myid] = firstStar;
+    testVectSend[2 * myid + 1] = lastStar;
 
-        MPI_Allreduce(testVectSend, testVectRecv, 2 * nproc, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(testVectSend, testVectRecv, 2 * nproc, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 
-        for (int i = 0; i < nproc; i++)
-            mapStar[i] = (int *)calloc(2, sizeof(int));
-        for (int i = 0; i < nproc; i++)
-        {
-            mapStar[i][0] = testVectRecv[2 * i];
-            mapStar[i][1] = testVectRecv[2 * i + 1];
-        }
+    for (int i = 0; i < nproc; i++)
+        mapStar[i] = (int *)calloc(2, sizeof(int));
+    for (int i = 0; i < nproc; i++)
+    {
+        mapStar[i][0] = testVectRecv[2 * i];
+        mapStar[i][1] = testVectRecv[2 * i + 1];
+    }
 
-        for (int i = 0; i < nproc; i++)
-        {
-            free(tempStarSend[i]);
-            free(tempStarRecv[i]);
-        }
+    for (int i = 0; i < nproc; i++)
+    {
+        free(tempStarSend[i]);
+        free(tempStarRecv[i]);
+    }
 
-        free(tempStarSend);
-        free(tempStarRecv);
-    #else
-        mapStar[0] = (int *)calloc(2, sizeof(int));
-        mapStar[0][0] = firstStar;
-        mapStar[0][1] = lastStar;
-    #endif
+    free(tempStarSend);
+    free(tempStarRecv);
+#else
+    mapStar[0] = (int *)calloc(2, sizeof(int));
+    mapStar[0][0] = firstStar;
+    mapStar[0][1] = lastStar;
+#endif
 }
 
 #endif

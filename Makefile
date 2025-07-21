@@ -12,7 +12,7 @@
 
 GNUTOOLCHAIN	?=	#PATHTOGNUSTLIBRARY
 MPI_HOME		?=	#PATHTOMPIHOME
-GPUARCH			?=	#GPU architectures (could be: sm_90,sm_80,sm_75,sm_70,gfx90a,gfx908)
+GPUARCH			?=	sm_80 #GPU architectures (could be: sm_90,sm_80,sm_75,sm_70,gfx90a,gfx908)
 CUDAPATH		?= 	#CUDAPATH
 ROCM_PATH		?= 	#ROCHPATH
 KOKKOSHOME		?= 	#KOKKOSINSTALLATIONDIRECTORY
