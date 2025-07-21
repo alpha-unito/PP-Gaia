@@ -1,5 +1,16 @@
 # The Gaia AVU-GSR code
 
+Please, to cite this code, use the following bibtex entry:
+```bibtex
+@article{Malenza25,
+	title        = {Performance Portability Assesment in Gaia},
+	author       = {Giulio Malenza, Valentina Cesare, Marco Edoardo Santimaria, Robert Birke, Alberto Vecchiato, Ugo Becciani, Marco Aldinucci},
+	year         = 2025,
+	journal      = {Transactions on Parallel and Distributed Systems (TPDS)},
+	doi          = {10.1109/TPDS.2025.3591452}
+}
+```
+
 Instructions for compilation and execution of the simulator used to test LSQR algorithm for the ESA Gaia mission. 
 
 The folder is organized in the following way:
@@ -59,3 +70,4 @@ Here:
 - itnlimit specifies the maximum number of iterations run by LSQR. This number is not reached if confergence is reached before.
 
 In the scripts directory, some example scripts can be found for reproducibility.
+
