@@ -1,0 +1,375 @@
+-memGlobal 10.000000Execution of solvergaia Simulator version 8.0 on 1 mpi-tasks
+ solvergaiaSim -IDtest 0.000000e+00 -Precond on -itnlimit 300  -noConstr -barConstr 1.000000e+01 -wgic 100
+Process 0 running 
+Running with memory 9.999268 GB, nStar=40000 nobs=46080000
+atol=  0.000000000000000
+btol=  0.000000000000000
+conlim= 1.000000000000000e+13
+itnlim=     300
+damp=  0.000000000000000
+nStar=   40000
+nAstroP=       5
+nAstroPSolved= 5
+nDegFreedomAtt=  230489
+nAttAxes=       3
+nFovs=       2 (instrConst[0])=       1
+nCCDs=      62
+nPixelColumns=    1966
+nTimeIntervals=      22
+nInstrPSolved=       6
+lsInstrFlag=       1
+ssInstrFlag=       1
+nuInstrFlag=       1
+maInstrFlag=       1
+nOfInstrConstr=      -1
+nElemIC=      -1
+nGlobP=       0
+nObs=   46080000
+nCovEle= 0
+Time to read initial parameters =0.000075 sec.
+Time to set system coefficients 21.627871 
+firstStart 0 lastStar 39999
+mapStar[0][0]=0 mapStar[0][1]=39999
+PE = 0, VrIdAstroPDimMax = 40000, VrIdAstroPDim = 40000, nAstroPSolved = 5, nAttParam = 691467, nInstrParam = 260338, nGlobalParam = 0
+nunkSplit = 1151805
+LOCAL 9221899772 MB of memory allocated on each task.
+TOTAL MB memory allocated= 9221899772
+Time precondvector          4.6818599701 
+Inverting preCondVect
+Computation of the preconditioning vector finished.
+
+
+Running with OMP: nthreads=1
+
+time routing precondSystemMatrix          4.0665364265 
+System built, ready to call LSQR.
+Please wait. System solution is underway...Starting lsqr after sec: 140729802111664
+LSQR: START ITERATIONS
+lsqr: Iteration number 1. Iteration seconds 0.163738. Global Seconds 0.163738 
+lsqr: Iteration number 2. Iteration seconds 0.159489. Global Seconds 0.323227 
+lsqr: Iteration number 3. Iteration seconds 0.159302. Global Seconds 0.482529 
+lsqr: Iteration number 4. Iteration seconds 0.159412. Global Seconds 0.641941 
+lsqr: Iteration number 5. Iteration seconds 0.159479. Global Seconds 0.801419 
+lsqr: Iteration number 6. Iteration seconds 0.159096. Global Seconds 0.960515 
+lsqr: Iteration number 7. Iteration seconds 0.159241. Global Seconds 1.119756 
+lsqr: Iteration number 8. Iteration seconds 0.159308. Global Seconds 1.279064 
+lsqr: Iteration number 9. Iteration seconds 0.159018. Global Seconds 1.438082 
+lsqr: Iteration number 10. Iteration seconds 0.159170. Global Seconds 1.597251 
+lsqr: Iteration number 11. Iteration seconds 0.159187. Global Seconds 1.756438 
+lsqr: Iteration number 12. Iteration seconds 0.158996. Global Seconds 1.915435 
+lsqr: Iteration number 13. Iteration seconds 0.159288. Global Seconds 2.074723 
+lsqr: Iteration number 14. Iteration seconds 0.158816. Global Seconds 2.233539 
+lsqr: Iteration number 15. Iteration seconds 0.159411. Global Seconds 2.392950 
+lsqr: Iteration number 16. Iteration seconds 0.159140. Global Seconds 2.552090 
+lsqr: Iteration number 17. Iteration seconds 0.159290. Global Seconds 2.711379 
+lsqr: Iteration number 18. Iteration seconds 0.158832. Global Seconds 2.870212 
+lsqr: Iteration number 19. Iteration seconds 0.159364. Global Seconds 3.029575 
+lsqr: Iteration number 20. Iteration seconds 0.159237. Global Seconds 3.188813 
+lsqr: Iteration number 21. Iteration seconds 0.159380. Global Seconds 3.348192 
+lsqr: Iteration number 22. Iteration seconds 0.159330. Global Seconds 3.507522 
+lsqr: Iteration number 23. Iteration seconds 0.159223. Global Seconds 3.666745 
+lsqr: Iteration number 24. Iteration seconds 0.158913. Global Seconds 3.825658 
+lsqr: Iteration number 25. Iteration seconds 0.159211. Global Seconds 3.984869 
+lsqr: Iteration number 26. Iteration seconds 0.159403. Global Seconds 4.144272 
+lsqr: Iteration number 27. Iteration seconds 0.159118. Global Seconds 4.303390 
+lsqr: Iteration number 28. Iteration seconds 0.159186. Global Seconds 4.462576 
+lsqr: Iteration number 29. Iteration seconds 0.159190. Global Seconds 4.621766 
+lsqr: Iteration number 30. Iteration seconds 0.159745. Global Seconds 4.781510 
+lsqr: Iteration number 31. Iteration seconds 0.159096. Global Seconds 4.940606 
+lsqr: Iteration number 32. Iteration seconds 0.159289. Global Seconds 5.099895 
+lsqr: Iteration number 33. Iteration seconds 0.158647. Global Seconds 5.258541 
+lsqr: Iteration number 34. Iteration seconds 0.159245. Global Seconds 5.417787 
+lsqr: Iteration number 35. Iteration seconds 0.159188. Global Seconds 5.576975 
+lsqr: Iteration number 36. Iteration seconds 0.159433. Global Seconds 5.736408 
+lsqr: Iteration number 37. Iteration seconds 0.159518. Global Seconds 5.895926 
+lsqr: Iteration number 38. Iteration seconds 0.159303. Global Seconds 6.055229 
+lsqr: Iteration number 39. Iteration seconds 0.158724. Global Seconds 6.213953 
+lsqr: Iteration number 40. Iteration seconds 0.159267. Global Seconds 6.373220 
+lsqr: Iteration number 41. Iteration seconds 0.159147. Global Seconds 6.532367 
+lsqr: Iteration number 42. Iteration seconds 0.159267. Global Seconds 6.691634 
+lsqr: Iteration number 43. Iteration seconds 0.159366. Global Seconds 6.851001 
+lsqr: Iteration number 44. Iteration seconds 0.159168. Global Seconds 7.010169 
+lsqr: Iteration number 45. Iteration seconds 0.159182. Global Seconds 7.169351 
+lsqr: Iteration number 46. Iteration seconds 0.158778. Global Seconds 7.328129 
+lsqr: Iteration number 47. Iteration seconds 0.159024. Global Seconds 7.487153 
+lsqr: Iteration number 48. Iteration seconds 0.158845. Global Seconds 7.645998 
+lsqr: Iteration number 49. Iteration seconds 0.159189. Global Seconds 7.805187 
+lsqr: Iteration number 50. Iteration seconds 0.159064. Global Seconds 7.964251 
+lsqr: Iteration number 51. Iteration seconds 0.159184. Global Seconds 8.123435 
+lsqr: Iteration number 52. Iteration seconds 0.159222. Global Seconds 8.282658 
+lsqr: Iteration number 53. Iteration seconds 0.158128. Global Seconds 8.440786 
+lsqr: Iteration number 54. Iteration seconds 0.159315. Global Seconds 8.600101 
+lsqr: Iteration number 55. Iteration seconds 0.159007. Global Seconds 8.759108 
+lsqr: Iteration number 56. Iteration seconds 0.159306. Global Seconds 8.918414 
+lsqr: Iteration number 57. Iteration seconds 0.159302. Global Seconds 9.077715 
+lsqr: Iteration number 58. Iteration seconds 0.159253. Global Seconds 9.236968 
+lsqr: Iteration number 59. Iteration seconds 0.159075. Global Seconds 9.396043 
+lsqr: Iteration number 60. Iteration seconds 0.159190. Global Seconds 9.555233 
+lsqr: Iteration number 61. Iteration seconds 0.159154. Global Seconds 9.714387 
+lsqr: Iteration number 62. Iteration seconds 0.158979. Global Seconds 9.873366 
+lsqr: Iteration number 63. Iteration seconds 0.159205. Global Seconds 10.032571 
+lsqr: Iteration number 64. Iteration seconds 0.159252. Global Seconds 10.191822 
+lsqr: Iteration number 65. Iteration seconds 0.159019. Global Seconds 10.350842 
+lsqr: Iteration number 66. Iteration seconds 0.159323. Global Seconds 10.510165 
+lsqr: Iteration number 67. Iteration seconds 0.159137. Global Seconds 10.669302 
+lsqr: Iteration number 68. Iteration seconds 0.159080. Global Seconds 10.828381 
+lsqr: Iteration number 69. Iteration seconds 0.158950. Global Seconds 10.987332 
+lsqr: Iteration number 70. Iteration seconds 0.159159. Global Seconds 11.146491 
+lsqr: Iteration number 71. Iteration seconds 0.158993. Global Seconds 11.305483 
+lsqr: Iteration number 72. Iteration seconds 0.158956. Global Seconds 11.464439 
+lsqr: Iteration number 73. Iteration seconds 0.158813. Global Seconds 11.623252 
+lsqr: Iteration number 74. Iteration seconds 0.159358. Global Seconds 11.782610 
+lsqr: Iteration number 75. Iteration seconds 0.159299. Global Seconds 11.941909 
+lsqr: Iteration number 76. Iteration seconds 0.159228. Global Seconds 12.101137 
+lsqr: Iteration number 77. Iteration seconds 0.159049. Global Seconds 12.260186 
+lsqr: Iteration number 78. Iteration seconds 0.159347. Global Seconds 12.419534 
+lsqr: Iteration number 79. Iteration seconds 0.158971. Global Seconds 12.578504 
+lsqr: Iteration number 80. Iteration seconds 0.159463. Global Seconds 12.737967 
+lsqr: Iteration number 81. Iteration seconds 0.158824. Global Seconds 12.896791 
+lsqr: Iteration number 82. Iteration seconds 0.159117. Global Seconds 13.055907 
+lsqr: Iteration number 83. Iteration seconds 0.159181. Global Seconds 13.215088 
+lsqr: Iteration number 84. Iteration seconds 0.159225. Global Seconds 13.374314 
+lsqr: Iteration number 85. Iteration seconds 0.158886. Global Seconds 13.533199 
+lsqr: Iteration number 86. Iteration seconds 0.159189. Global Seconds 13.692389 
+lsqr: Iteration number 87. Iteration seconds 0.159254. Global Seconds 13.851642 
+lsqr: Iteration number 88. Iteration seconds 0.158790. Global Seconds 14.010432 
+lsqr: Iteration number 89. Iteration seconds 0.159167. Global Seconds 14.169600 
+lsqr: Iteration number 90. Iteration seconds 0.158930. Global Seconds 14.328530 
+lsqr: Iteration number 91. Iteration seconds 0.159185. Global Seconds 14.487714 
+lsqr: Iteration number 92. Iteration seconds 0.159184. Global Seconds 14.646899 
+lsqr: Iteration number 93. Iteration seconds 0.159091. Global Seconds 14.805989 
+lsqr: Iteration number 94. Iteration seconds 0.159054. Global Seconds 14.965043 
+lsqr: Iteration number 95. Iteration seconds 0.159170. Global Seconds 15.124213 
+lsqr: Iteration number 96. Iteration seconds 0.159049. Global Seconds 15.283262 
+lsqr: Iteration number 97. Iteration seconds 0.158845. Global Seconds 15.442107 
+lsqr: Iteration number 98. Iteration seconds 0.159317. Global Seconds 15.601424 
+lsqr: Iteration number 99. Iteration seconds 0.159060. Global Seconds 15.760484 
+lsqr: Iteration number 100. Iteration seconds 0.159251. Global Seconds 15.919734 
+lsqr: Iteration number 101. Iteration seconds 0.159162. Global Seconds 16.078897 
+lsqr: Iteration number 102. Iteration seconds 0.159020. Global Seconds 16.237917 
+lsqr: Iteration number 103. Iteration seconds 0.158904. Global Seconds 16.396820 
+lsqr: Iteration number 104. Iteration seconds 0.159115. Global Seconds 16.555935 
+lsqr: Iteration number 105. Iteration seconds 0.159186. Global Seconds 16.715121 
+lsqr: Iteration number 106. Iteration seconds 0.159110. Global Seconds 16.874231 
+lsqr: Iteration number 107. Iteration seconds 0.159063. Global Seconds 17.033295 
+lsqr: Iteration number 108. Iteration seconds 0.159407. Global Seconds 17.192702 
+lsqr: Iteration number 109. Iteration seconds 0.158896. Global Seconds 17.351598 
+lsqr: Iteration number 110. Iteration seconds 0.159292. Global Seconds 17.510890 
+lsqr: Iteration number 111. Iteration seconds 0.158991. Global Seconds 17.669881 
+lsqr: Iteration number 112. Iteration seconds 0.159145. Global Seconds 17.829026 
+lsqr: Iteration number 113. Iteration seconds 0.159293. Global Seconds 17.988319 
+lsqr: Iteration number 114. Iteration seconds 0.159333. Global Seconds 18.147652 
+lsqr: Iteration number 115. Iteration seconds 0.159438. Global Seconds 18.307091 
+lsqr: Iteration number 116. Iteration seconds 0.159061. Global Seconds 18.466152 
+lsqr: Iteration number 117. Iteration seconds 0.159079. Global Seconds 18.625230 
+lsqr: Iteration number 118. Iteration seconds 0.159047. Global Seconds 18.784277 
+lsqr: Iteration number 119. Iteration seconds 0.159249. Global Seconds 18.943527 
+lsqr: Iteration number 120. Iteration seconds 0.158979. Global Seconds 19.102505 
+lsqr: Iteration number 121. Iteration seconds 0.159020. Global Seconds 19.261525 
+lsqr: Iteration number 122. Iteration seconds 0.158685. Global Seconds 19.420210 
+lsqr: Iteration number 123. Iteration seconds 0.159267. Global Seconds 19.579477 
+lsqr: Iteration number 124. Iteration seconds 0.158997. Global Seconds 19.738474 
+lsqr: Iteration number 125. Iteration seconds 0.159379. Global Seconds 19.897853 
+lsqr: Iteration number 126. Iteration seconds 0.159621. Global Seconds 20.057474 
+lsqr: Iteration number 127. Iteration seconds 0.159295. Global Seconds 20.216769 
+lsqr: Iteration number 128. Iteration seconds 0.159342. Global Seconds 20.376111 
+lsqr: Iteration number 129. Iteration seconds 0.159076. Global Seconds 20.535186 
+lsqr: Iteration number 130. Iteration seconds 0.158983. Global Seconds 20.694170 
+lsqr: Iteration number 131. Iteration seconds 0.159314. Global Seconds 20.853484 
+lsqr: Iteration number 132. Iteration seconds 0.159168. Global Seconds 21.012652 
+lsqr: Iteration number 133. Iteration seconds 0.159273. Global Seconds 21.171925 
+lsqr: Iteration number 134. Iteration seconds 0.159125. Global Seconds 21.331049 
+lsqr: Iteration number 135. Iteration seconds 0.159187. Global Seconds 21.490237 
+lsqr: Iteration number 136. Iteration seconds 0.159292. Global Seconds 21.649529 
+lsqr: Iteration number 137. Iteration seconds 0.159261. Global Seconds 21.808789 
+lsqr: Iteration number 138. Iteration seconds 0.159063. Global Seconds 21.967853 
+lsqr: Iteration number 139. Iteration seconds 0.158918. Global Seconds 22.126770 
+lsqr: Iteration number 140. Iteration seconds 0.159070. Global Seconds 22.285841 
+lsqr: Iteration number 141. Iteration seconds 0.159027. Global Seconds 22.444867 
+lsqr: Iteration number 142. Iteration seconds 0.159305. Global Seconds 22.604173 
+lsqr: Iteration number 143. Iteration seconds 0.159412. Global Seconds 22.763585 
+lsqr: Iteration number 144. Iteration seconds 0.159378. Global Seconds 22.922963 
+lsqr: Iteration number 145. Iteration seconds 0.159022. Global Seconds 23.081986 
+lsqr: Iteration number 146. Iteration seconds 0.159211. Global Seconds 23.241197 
+lsqr: Iteration number 147. Iteration seconds 0.158940. Global Seconds 23.400137 
+lsqr: Iteration number 148. Iteration seconds 0.158976. Global Seconds 23.559113 
+lsqr: Iteration number 149. Iteration seconds 0.159160. Global Seconds 23.718272 
+lsqr: Iteration number 150. Iteration seconds 0.159329. Global Seconds 23.877601 
+lsqr: Iteration number 151. Iteration seconds 0.159127. Global Seconds 24.036729 
+lsqr: Iteration number 152. Iteration seconds 0.159052. Global Seconds 24.195780 
+lsqr: Iteration number 153. Iteration seconds 0.159086. Global Seconds 24.354867 
+lsqr: Iteration number 154. Iteration seconds 0.159248. Global Seconds 24.514115 
+lsqr: Iteration number 155. Iteration seconds 0.158958. Global Seconds 24.673073 
+lsqr: Iteration number 156. Iteration seconds 0.159215. Global Seconds 24.832288 
+lsqr: Iteration number 157. Iteration seconds 0.159322. Global Seconds 24.991610 
+lsqr: Iteration number 158. Iteration seconds 0.159149. Global Seconds 25.150759 
+lsqr: Iteration number 159. Iteration seconds 0.159305. Global Seconds 25.310064 
+lsqr: Iteration number 160. Iteration seconds 0.159257. Global Seconds 25.469321 
+lsqr: Iteration number 161. Iteration seconds 0.159387. Global Seconds 25.628708 
+lsqr: Iteration number 162. Iteration seconds 0.159129. Global Seconds 25.787837 
+lsqr: Iteration number 163. Iteration seconds 0.159335. Global Seconds 25.947172 
+lsqr: Iteration number 164. Iteration seconds 0.158712. Global Seconds 26.105884 
+lsqr: Iteration number 165. Iteration seconds 0.158964. Global Seconds 26.264848 
+lsqr: Iteration number 166. Iteration seconds 0.158808. Global Seconds 26.423656 
+lsqr: Iteration number 167. Iteration seconds 0.159338. Global Seconds 26.582994 
+lsqr: Iteration number 168. Iteration seconds 0.158945. Global Seconds 26.741939 
+lsqr: Iteration number 169. Iteration seconds 0.158769. Global Seconds 26.900707 
+lsqr: Iteration number 170. Iteration seconds 0.158736. Global Seconds 27.059443 
+lsqr: Iteration number 171. Iteration seconds 0.159219. Global Seconds 27.218662 
+lsqr: Iteration number 172. Iteration seconds 0.159329. Global Seconds 27.377991 
+lsqr: Iteration number 173. Iteration seconds 0.158923. Global Seconds 27.536914 
+lsqr: Iteration number 174. Iteration seconds 0.158958. Global Seconds 27.695872 
+lsqr: Iteration number 175. Iteration seconds 0.159124. Global Seconds 27.854997 
+lsqr: Iteration number 176. Iteration seconds 0.159143. Global Seconds 28.014139 
+lsqr: Iteration number 177. Iteration seconds 0.158975. Global Seconds 28.173114 
+lsqr: Iteration number 178. Iteration seconds 0.159335. Global Seconds 28.332449 
+lsqr: Iteration number 179. Iteration seconds 0.159181. Global Seconds 28.491630 
+lsqr: Iteration number 180. Iteration seconds 0.159116. Global Seconds 28.650747 
+lsqr: Iteration number 181. Iteration seconds 0.159032. Global Seconds 28.809778 
+lsqr: Iteration number 182. Iteration seconds 0.159320. Global Seconds 28.969099 
+lsqr: Iteration number 183. Iteration seconds 0.159440. Global Seconds 29.128539 
+lsqr: Iteration number 184. Iteration seconds 0.159446. Global Seconds 29.287985 
+lsqr: Iteration number 185. Iteration seconds 0.158939. Global Seconds 29.446924 
+lsqr: Iteration number 186. Iteration seconds 0.159184. Global Seconds 29.606108 
+lsqr: Iteration number 187. Iteration seconds 0.158854. Global Seconds 29.764961 
+lsqr: Iteration number 188. Iteration seconds 0.159188. Global Seconds 29.924149 
+lsqr: Iteration number 189. Iteration seconds 0.158810. Global Seconds 30.082959 
+lsqr: Iteration number 190. Iteration seconds 0.159268. Global Seconds 30.242227 
+lsqr: Iteration number 191. Iteration seconds 0.158942. Global Seconds 30.401169 
+lsqr: Iteration number 192. Iteration seconds 0.158950. Global Seconds 30.560119 
+lsqr: Iteration number 193. Iteration seconds 0.158987. Global Seconds 30.719106 
+lsqr: Iteration number 194. Iteration seconds 0.159214. Global Seconds 30.878320 
+lsqr: Iteration number 195. Iteration seconds 0.159153. Global Seconds 31.037473 
+lsqr: Iteration number 196. Iteration seconds 0.159157. Global Seconds 31.196631 
+lsqr: Iteration number 197. Iteration seconds 0.158925. Global Seconds 31.355556 
+lsqr: Iteration number 198. Iteration seconds 0.159111. Global Seconds 31.514667 
+lsqr: Iteration number 199. Iteration seconds 0.158735. Global Seconds 31.673402 
+lsqr: Iteration number 200. Iteration seconds 0.159097. Global Seconds 31.832500 
+lsqr: Iteration number 201. Iteration seconds 0.158950. Global Seconds 31.991449 
+lsqr: Iteration number 202. Iteration seconds 0.158930. Global Seconds 32.150379 
+lsqr: Iteration number 203. Iteration seconds 0.159372. Global Seconds 32.309752 
+lsqr: Iteration number 204. Iteration seconds 0.159162. Global Seconds 32.468914 
+lsqr: Iteration number 205. Iteration seconds 0.159459. Global Seconds 32.628373 
+lsqr: Iteration number 206. Iteration seconds 0.159156. Global Seconds 32.787528 
+lsqr: Iteration number 207. Iteration seconds 0.158874. Global Seconds 32.946402 
+lsqr: Iteration number 208. Iteration seconds 0.158674. Global Seconds 33.105076 
+lsqr: Iteration number 209. Iteration seconds 0.158909. Global Seconds 33.263985 
+lsqr: Iteration number 210. Iteration seconds 0.158652. Global Seconds 33.422638 
+lsqr: Iteration number 211. Iteration seconds 0.159150. Global Seconds 33.581787 
+lsqr: Iteration number 212. Iteration seconds 0.159233. Global Seconds 33.741021 
+lsqr: Iteration number 213. Iteration seconds 0.158951. Global Seconds 33.899972 
+lsqr: Iteration number 214. Iteration seconds 0.159125. Global Seconds 34.059097 
+lsqr: Iteration number 215. Iteration seconds 0.159119. Global Seconds 34.218216 
+lsqr: Iteration number 216. Iteration seconds 0.159225. Global Seconds 34.377442 
+lsqr: Iteration number 217. Iteration seconds 0.159211. Global Seconds 34.536653 
+lsqr: Iteration number 218. Iteration seconds 0.159128. Global Seconds 34.695781 
+lsqr: Iteration number 219. Iteration seconds 0.158986. Global Seconds 34.854767 
+lsqr: Iteration number 220. Iteration seconds 0.159208. Global Seconds 35.013976 
+lsqr: Iteration number 221. Iteration seconds 0.158895. Global Seconds 35.172871 
+lsqr: Iteration number 222. Iteration seconds 0.159355. Global Seconds 35.332226 
+lsqr: Iteration number 223. Iteration seconds 0.159077. Global Seconds 35.491304 
+lsqr: Iteration number 224. Iteration seconds 0.159108. Global Seconds 35.650411 
+lsqr: Iteration number 225. Iteration seconds 0.159392. Global Seconds 35.809803 
+lsqr: Iteration number 226. Iteration seconds 0.158977. Global Seconds 35.968781 
+lsqr: Iteration number 227. Iteration seconds 0.159257. Global Seconds 36.128037 
+lsqr: Iteration number 228. Iteration seconds 0.159381. Global Seconds 36.287418 
+lsqr: Iteration number 229. Iteration seconds 0.159191. Global Seconds 36.446609 
+lsqr: Iteration number 230. Iteration seconds 0.158989. Global Seconds 36.605599 
+lsqr: Iteration number 231. Iteration seconds 0.159089. Global Seconds 36.764688 
+lsqr: Iteration number 232. Iteration seconds 0.158706. Global Seconds 36.923394 
+lsqr: Iteration number 233. Iteration seconds 0.159066. Global Seconds 37.082460 
+lsqr: Iteration number 234. Iteration seconds 0.159402. Global Seconds 37.241862 
+lsqr: Iteration number 235. Iteration seconds 0.159131. Global Seconds 37.400993 
+lsqr: Iteration number 236. Iteration seconds 0.158610. Global Seconds 37.559603 
+lsqr: Iteration number 237. Iteration seconds 0.159320. Global Seconds 37.718923 
+lsqr: Iteration number 238. Iteration seconds 0.159239. Global Seconds 37.878162 
+lsqr: Iteration number 239. Iteration seconds 0.157935. Global Seconds 38.036097 
+lsqr: Iteration number 240. Iteration seconds 0.159276. Global Seconds 38.195373 
+lsqr: Iteration number 241. Iteration seconds 0.159248. Global Seconds 38.354621 
+lsqr: Iteration number 242. Iteration seconds 0.158972. Global Seconds 38.513593 
+lsqr: Iteration number 243. Iteration seconds 0.159415. Global Seconds 38.673007 
+lsqr: Iteration number 244. Iteration seconds 0.159282. Global Seconds 38.832289 
+lsqr: Iteration number 245. Iteration seconds 0.159643. Global Seconds 38.991932 
+lsqr: Iteration number 246. Iteration seconds 0.159071. Global Seconds 39.151003 
+lsqr: Iteration number 247. Iteration seconds 0.158895. Global Seconds 39.309898 
+lsqr: Iteration number 248. Iteration seconds 0.159087. Global Seconds 39.468985 
+lsqr: Iteration number 249. Iteration seconds 0.159199. Global Seconds 39.628184 
+lsqr: Iteration number 250. Iteration seconds 0.159252. Global Seconds 39.787436 
+lsqr: Iteration number 251. Iteration seconds 0.159499. Global Seconds 39.946935 
+lsqr: Iteration number 252. Iteration seconds 0.159126. Global Seconds 40.106061 
+lsqr: Iteration number 253. Iteration seconds 0.159551. Global Seconds 40.265611 
+lsqr: Iteration number 254. Iteration seconds 0.159118. Global Seconds 40.424730 
+lsqr: Iteration number 255. Iteration seconds 0.159205. Global Seconds 40.583935 
+lsqr: Iteration number 256. Iteration seconds 0.158959. Global Seconds 40.742894 
+lsqr: Iteration number 257. Iteration seconds 0.159175. Global Seconds 40.902069 
+lsqr: Iteration number 258. Iteration seconds 0.159272. Global Seconds 41.061341 
+lsqr: Iteration number 259. Iteration seconds 0.159051. Global Seconds 41.220392 
+lsqr: Iteration number 260. Iteration seconds 0.159165. Global Seconds 41.379557 
+lsqr: Iteration number 261. Iteration seconds 0.159132. Global Seconds 41.538690 
+lsqr: Iteration number 262. Iteration seconds 0.159501. Global Seconds 41.698191 
+lsqr: Iteration number 263. Iteration seconds 0.159305. Global Seconds 41.857496 
+lsqr: Iteration number 264. Iteration seconds 0.159121. Global Seconds 42.016617 
+lsqr: Iteration number 265. Iteration seconds 0.159358. Global Seconds 42.175975 
+lsqr: Iteration number 266. Iteration seconds 0.159115. Global Seconds 42.335089 
+lsqr: Iteration number 267. Iteration seconds 0.159469. Global Seconds 42.494558 
+lsqr: Iteration number 268. Iteration seconds 0.159069. Global Seconds 42.653627 
+lsqr: Iteration number 269. Iteration seconds 0.159014. Global Seconds 42.812642 
+lsqr: Iteration number 270. Iteration seconds 0.159134. Global Seconds 42.971776 
+lsqr: Iteration number 271. Iteration seconds 0.158954. Global Seconds 43.130730 
+lsqr: Iteration number 272. Iteration seconds 0.158729. Global Seconds 43.289459 
+lsqr: Iteration number 273. Iteration seconds 0.159266. Global Seconds 43.448724 
+lsqr: Iteration number 274. Iteration seconds 0.159307. Global Seconds 43.608032 
+lsqr: Iteration number 275. Iteration seconds 0.159150. Global Seconds 43.767181 
+lsqr: Iteration number 276. Iteration seconds 0.158946. Global Seconds 43.926127 
+lsqr: Iteration number 277. Iteration seconds 0.159249. Global Seconds 44.085376 
+lsqr: Iteration number 278. Iteration seconds 0.158901. Global Seconds 44.244277 
+lsqr: Iteration number 279. Iteration seconds 0.159219. Global Seconds 44.403496 
+lsqr: Iteration number 280. Iteration seconds 0.159298. Global Seconds 44.562794 
+lsqr: Iteration number 281. Iteration seconds 0.159093. Global Seconds 44.721887 
+lsqr: Iteration number 282. Iteration seconds 0.158829. Global Seconds 44.880717 
+lsqr: Iteration number 283. Iteration seconds 0.159234. Global Seconds 45.039951 
+lsqr: Iteration number 284. Iteration seconds 0.159099. Global Seconds 45.199050 
+lsqr: Iteration number 285. Iteration seconds 0.159569. Global Seconds 45.358618 
+lsqr: Iteration number 286. Iteration seconds 0.159099. Global Seconds 45.517717 
+lsqr: Iteration number 287. Iteration seconds 0.159033. Global Seconds 45.676751 
+lsqr: Iteration number 288. Iteration seconds 0.159268. Global Seconds 45.836019 
+lsqr: Iteration number 289. Iteration seconds 0.158897. Global Seconds 45.994916 
+lsqr: Iteration number 290. Iteration seconds 0.159412. Global Seconds 46.154328 
+lsqr: Iteration number 291. Iteration seconds 0.159015. Global Seconds 46.313343 
+lsqr: Iteration number 292. Iteration seconds 0.159229. Global Seconds 46.472572 
+lsqr: Iteration number 293. Iteration seconds 0.159119. Global Seconds 46.631691 
+lsqr: Iteration number 294. Iteration seconds 0.159206. Global Seconds 46.790898 
+lsqr: Iteration number 295. Iteration seconds 0.159024. Global Seconds 46.949921 
+lsqr: Iteration number 296. Iteration seconds 0.159497. Global Seconds 47.109418 
+lsqr: Iteration number 297. Iteration seconds 0.159092. Global Seconds 47.268510 
+lsqr: Iteration number 298. Iteration seconds 0.159435. Global Seconds 47.427946 
+lsqr: Iteration number 299. Iteration seconds 0.159310. Global Seconds 47.587256 
+lsqr: Iteration number 300. Iteration seconds 0.159243. Global Seconds 47.746499 
+Average iteration time: 0.159155 
+Average kernel Aprod1Astro time: 0.003453 
+Average kernel Aprod1Att time: 0.055681 
+Average kernel Aprod1Instr time: 0.022086 
+Average kernel Aprod2Astro time: 0.008849 
+Average kernel Aprod2Att time: 0.049224 
+Average kernel Aprod2Instr time: 0.013019 
+Global Time for lsqr =77.197464 sec 
+Average deviation from ID solution: -8.431783e-15.
+  rms: 3.845821e-11.
+Maximum deviation from ID solution: 1.524725e-08.
+Processing finished.
+xSolution[0]=9.999999999993e-01 	 standardError[0]=4.933775446735e-14
+xSolution[1]=1.000000000003e+00 	 standardError[1]=4.697836375929e-14
+xSolution[2]=-9.999999999922e-01 	 standardError[2]=4.209183363973e-14
+xSolution[3]=9.999999999882e-01 	 standardError[3]=4.611839139697e-14
+xSolution[4]=-9.999999999888e-01 	 standardError[4]=4.292806101579e-14
+xSolution[5]=1.000000000013e+00 	 standardError[5]=3.452807493051e-14
+xSolution[6]=1.000000000002e+00 	 standardError[6]=3.479044728519e-14
+xSolution[7]=-9.999999999816e-01 	 standardError[7]=2.960236741673e-14
+xSolution[8]=1.000000000000e+00 	 standardError[8]=3.182095128871e-14
+xSolution[9]=-9.999999999909e-01 	 standardError[9]=2.947674287142e-14
+
+End run.
+time before lsqr in sec:    33.934769
+time for lsqr:    77.197464
+time after lsqr in sec:     0.007428
+time TOTAL:    77.204895
